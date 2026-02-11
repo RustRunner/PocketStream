@@ -1,0 +1,173 @@
+<resources>
+    <string name="app_name">PocketStream</string>
+
+    <!-- Tethering Section -->
+    <string name="tethering_title">ETHERNET TETHERING</string>
+    <string name="tethering_description">Enable in phone settings under Hotspot &amp; Tethering. Refresh if needed.</string>
+    <string name="connection_status">Connection status</string>
+    <string name="tethering_connected">Tethering Active</string>
+    <string name="tethering_disconnected">Tethering Not Detected - Please check settings</string>
+    <string name="tethering_error">Tethering unavailable (requires root access)</string>
+    <string name="refresh_app">Refresh app</string>
+
+    <!-- Connection Section (Combined Tethering + Network Discovery) -->
+    <string name="connect_button">CONNECT</string>
+    <string name="connect_idle">Ready to connect</string>
+    <string name="connect_in_progress">Connecting…</string>
+    <string name="connect_success">Device connected</string>
+    <string name="connect_failed">Connection failed</string>
+    <string name="connect_no_devices">No devices found</string>
+
+    <!-- Legacy scan strings (kept for compatibility) -->
+    <string name="ip_scan_title">Network Discovery</string>
+    <string name="ip_scan_description">Scan tethered network for remote device</string>
+    <string name="scan_network">Scan Network</string>
+    <string name="scan_status">Scan status</string>
+    <string name="detected_ip_label">Detected IP:</string>
+    <string name="no_ip_detected">No device detected</string>
+    <string name="scan_idle">Ready to scan</string>
+    <string name="scan_in_progress">Scanning network…</string>
+    <string name="scan_complete">Scan complete</string>
+    <string name="scan_failed">Scan failed</string>
+    <string name="scan_success">Device found</string>
+    <string name="scan_no_devices">No devices found</string>
+
+    <!-- Camera Config Section -->
+    <string name="gpsd_title">CAMERA CONFIG</string>
+    <string name="gpsd_description">Log in to system settings browser</string>
+    <string name="start_gps_forwarding">BROWSER</string>
+    <string name="stop_gps_forwarding">BROWSER</string>
+    <string name="streaming_status">Browser status</string>
+    <string name="target_ip_label">Camera IP:</string>
+    <string name="no_target_ip">Not configured</string>
+    <string name="gpsd_stopped"></string>
+    <string name="gpsd_starting">Opening browser...</string>
+    <string name="gpsd_streaming"></string>
+    <string name="gpsd_error">Failed to launch browser</string>
+
+    <!-- Video Stream Section -->
+    <string name="video_stream_title">VIDEO STREAM</string>
+    <string name="video_stream_description">Receive UDP video stream on this device</string>
+    <string name="stream_url_label">Receive Stream At (Phone IP):</string>
+    <string name="stream_ip_not_detected">Not detected</string>
+    <string name="stream_port_hint">8600</string>
+    <string name="launch_stream">STREAM</string>
+    <string name="stop_stream">STREAM</string>
+    <string name="stream_status">Stream status</string>
+    <string name="stream_idle">Not streaming</string>
+    <string name="stream_connecting">Connecting to stream...</string>
+    <string name="stream_buffering">Buffering...</string>
+    <string name="stream_playing">Streaming live</string>
+    <string name="stream_stopped">Stream stopped</string>
+    <string name="stream_error">Stream connection failed</string>
+    <string name="stream_timeout">Stream connection timed out</string>
+    <string name="take_screenshot">Screenshot</string>
+    <string name="start_recording">Record</string>
+    <string name="stop_recording">Stop Recording</string>
+    <string name="fullscreen_hint">Tap video to enter fullscreen</string>
+    <string name="screenshot_saved">Screenshot saved to %s</string>
+    <string name="recording_started">Recording started</string>
+    <string name="recording_stopped">Recording saved to %s</string>
+    <string name="error_screenshot_failed">Failed to save screenshot: %s</string>
+    <string name="error_recording_failed">Failed to start recording: %s</string>
+    <string name="error_no_stream">No active stream. Please launch stream first.</string>
+    <string name="error_storage_permission">Storage permission required to save files</string>
+
+    <!-- Error Messages -->
+    <string name="error_scan_first">Please scan network first to detect IP address</string>
+    <string name="error_tethering_enable_failed">Failed to enable tethering. Please check system settings.</string>
+    <string name="error_tethering_disable_failed">Failed to disable tethering.</string>
+    <string name="error_tethering_manual_required">Tethering may require manual activation in system settings.</string>
+    <string name="error_no_interface">No tethering interface found. Please enable tethering first.</string>
+    <string name="error_no_subnet">Unable to determine network subnet.</string>
+    <string name="error_tethering_check_settings">Check phone settings and ensure ethernet tethering is enabled.</string>
+    <string name="error_no_devices">No devices found on network. Make sure camera is connected.</string>
+    <string name="error_scan_exception">Scan failed: %s</string>
+    <string name="error_no_target_ip">No target IP detected. Please scan network first.</string>
+    <string name="error_gps_service_failed">Failed to launch browser. Please try again.</string>
+
+    <!-- Success Messages -->
+    <string name="success_tethering_enabled">Tethering enabled successfully.</string>
+    <string name="success_tethering_disabled">Tethering disabled successfully.</string>
+    <string name="success_device_found">Found camera at %s</string>
+    <string name="success_gps_started">Browser launched to %s</string>
+    <string name="success_gps_stopped">Browser closed.</string>
+
+    <!-- Info Messages -->
+    <string name="info_scanning_progress">Scanning… (%1$d/%2$d)</string>
+    <string name="info_tethering_enabling">Enabling tethering…</string>
+    <string name="info_tethering_disabling">Disabling tethering…</string>
+
+    <!-- Settings Drawer -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_menu">Open settings</string>
+
+    <!-- UDP Stream Section -->
+    <string name="udp_stream_section_title">UDP Stream</string>
+    <string name="stream_port_label">Stream Port</string>
+    <string name="stream_port_default">8600</string>
+    <string name="udp_stream_info_text">Configure the port to receive UDP video stream from the camera.</string>
+
+    <!-- RTSP Server Section -->
+    <string name="rtsp_section_title">RTSP Server</string>
+    <string name="rtsp_enable_label">Enable RTSP Server</string>
+    <string name="rtsp_enable_description">Share stream via token-protected RTSP</string>
+    <string name="rtsp_port_label">RTSP Port</string>
+    <string name="rtsp_port_hint">8554</string>
+    <string name="rtsp_info_text">When enabled, the video stream will be available via RTSP for other devices on the network.</string>
+
+    <!-- RTSP Auth Section -->
+    <string name="rtsp_auth_section_title">Stream Token</string>
+    <string name="rtsp_token_label">Current Token:</string>
+    <string name="rtsp_regenerate_token">Regenerate Token</string>
+    <string name="rtsp_token_regenerated">New token generated. Update your clients with the new URL.</string>
+    <string name="rtsp_auth_info_text">The token is included in the RTSP URL for security. Only clients with the exact URL can connect. Regenerate to invalidate old URLs.</string>
+
+    <!-- RTSP Status -->
+    <string name="rtsp_button">RTSP</string>
+    <string name="rtsp_stop_button">Stop Server</string>
+    <string name="rtsp_started">RTSP server started on port %d</string>
+    <string name="rtsp_stopped">RTSP server stopped</string>
+    <string name="rtsp_disabled">RTSP server is disabled in settings</string>
+    <string name="rtsp_error">Failed to start RTSP server: %s</string>
+    <string name="rtsp_url_label">RTSP URL:</string>
+    <string name="rtsp_url_copied">RTSP URL copied to clipboard</string>
+    <string name="rtsp_live">LIVE</string>
+    <string name="rtsp_credentials_required">Token will be auto-generated</string>
+    <string name="rtsp_connect_first">Connect to camera first</string>
+    <string name="rtsp_not_streaming">Not streaming</string>
+
+    <!-- RTSP Server Card (Card 5) -->
+    <string name="rtsp_server_title">RTSP SERVER</string>
+    <string name="rtsp_server_description">Share video stream via token-protected RTSP</string>
+    <string name="launch_rtsp">START\nSERVER</string>
+    <string name="stop_rtsp">STOP\nSERVER</string>
+    <string name="rtsp_status_idle">Not streaming</string>
+    <string name="rtsp_status_streaming">Streaming live</string>
+    <string name="rtsp_url_not_available">Enable in settings</string>
+    <string name="rtsp_credentials_label">Token:</string>
+    <string name="rtsp_auth_configured">Active</string>
+    <string name="rtsp_auth_not_configured">Not set</string>
+    <string name="rtsp_auth_active">Active</string>
+    <string name="rtsp_uptime_label">Uptime:</string>
+    <string name="rtsp_uptime_default">--:--</string>
+    <string name="rtsp_bandwidth_label">Bandwidth:</string>
+    <string name="rtsp_bandwidth_default">-- kb/s</string>
+
+    <!-- RTSP Notification -->
+    <string name="rtsp_notification_channel_name">RTSP Server</string>
+    <string name="rtsp_notification_channel_description">Shows when RTSP server is running</string>
+    <string name="rtsp_notification_title">RTSP Server Active</string>
+    <string name="rtsp_notification_text">Streaming on port %d</string>
+    <string name="rtsp_notification_stop">Stop</string>
+
+    <!-- About Section -->
+    <string name="about_section_title">About</string>
+    <string name="about_app_version">Version %s</string>
+    <string name="about_license_title">License</string>
+    <string name="about_license_type">AGPL License</string>
+    <string name="about_view_licenses">View Open Source Licenses</string>
+    <string name="about_eula_title">Terms of Use</string>
+    <string name="about_eula_text">This software is licensed under the GNU Affero General Public License (AGPL). Source code must be made available to all users who interact with it over a network. This software is provided \"as is\" without warranty of any kind. Use at your own risk. By using this app, you agree to comply with all applicable laws and regulations regarding network connectivity and data transmission.</string>
+    <string name="about_copyright">© 2026 PocketStream Contributors</string>
+</resources>

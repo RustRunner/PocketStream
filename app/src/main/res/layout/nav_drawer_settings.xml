@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/surface"
+    android:fitsSystemWindows="true">
+
+    <!-- Drawer Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@color/card_background"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_title"
+            android:textAppearance="@style/TextAppearance.TVSConnect.Headline2"
+            android:textColor="@color/text_primary" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/text_tertiary" />
+
+    <!-- Scrollable Content Area -->
+    <ScrollView
+        android:id="@+id/settingsScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Main Settings Content (non-scrollable by default) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- UDP Stream Section Header -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/udp_stream_section_title"
+                    android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                    android:textColor="@color/accent"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Stream Port -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/streamPortLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/stream_port_label"
+                    app:boxStrokeColor="@color/accent"
+                    app:hintTextColor="@color/text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/streamPortInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="5"
+                        android:textColor="@color/text_primary" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- UDP Stream Info Text -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/udp_stream_info_text"
+                    android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                    android:textColor="@color/text_tertiary"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- RTSP Server Section Header -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rtsp_section_title"
+                    android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                    android:textColor="@color/accent"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- RTSP Enable Toggle -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/rtsp_enable_label"
+                            android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/rtsp_enable_description"
+                            android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                            android:textColor="@color/text_secondary" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/rtspEnableSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- RTSP Port -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/rtspPortLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/rtsp_port_label"
+                    app:boxStrokeColor="@color/accent"
+                    app:hintTextColor="@color/text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/rtspPortInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="5"
+                        android:textColor="@color/text_primary" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- RTSP Auth Section Header -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rtsp_auth_section_title"
+                    android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                    android:textColor="@color/accent"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Token Label -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rtsp_token_label"
+                    android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="4dp" />
+
+                <!-- Current Token Display -->
+                <TextView
+                    android:id="@+id/rtspTokenValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/accent"
+                    android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                    android:background="@drawable/edittext_outline"
+                    android:padding="10dp" />
+
+                <!-- Regenerate Token Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/regenerateTokenButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rtsp_regenerate_token"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    app:strokeColor="@color/accent"
+                    android:textColor="@color/accent" />
+
+            </LinearLayout>
+
+            <!-- About Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_tertiary" />
+
+                <!-- About Content -->
+                <LinearLayout
+                    android:id="@+id/aboutContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- About Header -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/about_section_title"
+                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textColor="@color/accent"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- App Name and Version -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_name"
+                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/aboutVersionText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/about_app_version"
+                        android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- License -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/about_license_title"
+                        android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                        android:textColor="@color/text_tertiary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/about_license_type"
+                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- View Licenses Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/viewLicensesButton"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/about_view_licenses"
+                        android:textSize="12sp"
+                        android:textColor="@color/accent"
+                        android:paddingStart="0dp"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- EULA / Terms -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/about_eula_title"
+                        android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                        android:textColor="@color/text_tertiary"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/about_eula_text"
+                        android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                        android:textColor="@color/text_secondary"
+                        android:lineSpacingMultiplier="1.2"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Copyright -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/about_copyright"
+                        android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                        android:textColor="@color/text_tertiary"
+                        android:gravity="center" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

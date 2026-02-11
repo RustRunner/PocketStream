@@ -1,0 +1,79 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+  <!-- Pocket Stream Icon -->
+  <!-- Android Robot Body -->
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M54,42 L54,36 L50,36 L50,42 Z"/>
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M58,42 L58,36 L62,36 L62,42 Z"/>
+
+  <!-- Antennas -->
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M47,36 L49,32 L51,36 Z"
+      android:strokeWidth="1.5"
+      android:strokeColor="#3DDC84"/>
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M61,36 L59,32 L57,36 Z"
+      android:strokeWidth="1.5"
+      android:strokeColor="#3DDC84"/>
+
+  <!-- Head -->
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M42,42 Q42,38 46,38 L62,38 Q66,38 66,42 L66,52 Q66,56 62,56 L46,56 Q42,56 42,52 Z"/>
+
+  <!-- Eyes -->
+  <path
+      android:fillColor="#121212"
+      android:pathData="M48,46 m-2,0 a2,2 0,1 1,4 0 a2,2 0,1 1,-4 0"/>
+  <path
+      android:fillColor="#121212"
+      android:pathData="M60,46 m-2,0 a2,2 0,1 1,4 0 a2,2 0,1 1,-4 0"/>
+
+  <!-- Body -->
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M44,56 L44,70 Q44,72 46,72 L62,72 Q64,72 64,70 L64,56 Z"/>
+
+  <!-- Arms -->
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M38,56 Q36,56 36,58 L36,66 Q36,68 38,68 L40,68 L40,56 Z"/>
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M68,56 L68,68 L70,68 Q72,68 72,66 L72,58 Q72,56 70,56 Z"/>
+
+  <!-- Legs -->
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M46,72 L46,80 Q46,82 48,82 L50,82 L50,72 Z"/>
+  <path
+      android:fillColor="#3DDC84"
+      android:pathData="M58,72 L58,80 Q58,82 60,82 L60,82 L60,72 Z"/>
+
+  <!-- Connectivity Signal Waves (representing PocketStream) -->
+  <path
+      android:strokeColor="#00E676"
+      android:strokeWidth="2"
+      android:pathData="M26,54 Q28,54 30,52 Q32,50 34,50"/>
+  <path
+      android:strokeColor="#00E676"
+      android:strokeWidth="2"
+      android:pathData="M24,58 Q26,58 28,56 Q30,54 32,54"/>
+  <path
+      android:strokeColor="#00E676"
+      android:strokeWidth="2"
+      android:pathData="M82,54 Q80,54 78,52 Q76,50 74,50"/>
+  <path
+      android:strokeColor="#00E676"
+      android:strokeWidth="2"
+      android:pathData="M84,58 Q82,58 80,56 Q78,54 76,54"/>
+</vector>

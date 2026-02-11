@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context=".FullscreenVideoActivity">
+
+    <!-- Fullscreen Video Player -->
+    <SurfaceView
+        android:id="@+id/fullscreenPlayerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Loading/Status Text -->
+    <TextView
+        android:id="@+id/loadingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connecting..."
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:background="#80000000"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <!-- Back Button (top-left) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/backButton"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:contentDescription="Back"
+        app:icon="@android:drawable/ic_menu_close_clear_cancel"
+        app:iconTint="@android:color/white"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Recording Indicator (top-right, visible when recording) -->
+    <LinearLayout
+        android:id="@+id/recordingIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="85dp"
+        android:background="#80000000"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/fullscreenPlayerView"
+        app:layout_constraintTop_toTopOf="@id/fullscreenPlayerView"
+        tools:visibility="visible">
+
+        <!-- Red recording dot -->
+        <View
+            android:id="@+id/recordingDot"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:background="@drawable/recording_dot"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Timer display -->
+        <TextView
+            android:id="@+id/recordingTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:fontFamily="monospace" />
+    </LinearLayout>
+
+    <!-- Screenshot Button (bottom-left) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/screenshotButton"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="94dp"
+        android:layout_marginBottom="24dp"
+        android:text="Screenshot"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:gravity="center"
+        app:backgroundTint="#80000000"
+        app:layout_constraintStart_toStartOf="@id/fullscreenPlayerView"
+        app:layout_constraintBottom_toBottomOf="@id/fullscreenPlayerView" />
+
+    <!-- Record Button (bottom-right) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/recordButton"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="94dp"
+        android:layout_marginBottom="24dp"
+        android:text="Record"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:gravity="center"
+        app:backgroundTint="#80000000"
+        app:layout_constraintEnd_toEndOf="@id/fullscreenPlayerView"
+        app:layout_constraintBottom_toBottomOf="@id/fullscreenPlayerView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

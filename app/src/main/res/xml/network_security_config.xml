@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--
+        Network Security Configuration for Pocket Stream
+
+        This app communicates exclusively with local hardware (IP cameras)
+        on private networks via UDP/HTTP streams. Cleartext is required
+        for video streaming protocols on local network segments:
+        - 192.168.x.x (standard private, Ethernet tethering)
+        - 10.x.x.x (private class A)
+        - 172.16-31.x.x (private class B)
+
+        Note: Android domain-config does not support IP address ranges.
+        The usesCleartextTraffic manifest attribute handles local IP access.
+    -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
