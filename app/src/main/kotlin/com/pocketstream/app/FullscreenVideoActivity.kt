@@ -1,5 +1,6 @@
 package com.pocketstream.app
 
+import com.pocketstream.app.BuildConfig
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -575,7 +576,9 @@ class FullscreenVideoActivity : AppCompatActivity() {
                     add("--network-caching=1000")
                     add("--live-caching=500")
                     add("--udp-timeout=10000")
-                    add("-vvv")
+                    if (BuildConfig.DEBUG) {
+                        add("-vvv")
+                    }
                 }
                 libVLC = LibVLC(this@FullscreenVideoActivity, options)
                 Log.d(TAG, "LibVLC initialized")

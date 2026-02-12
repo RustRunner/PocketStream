@@ -1,5 +1,6 @@
 package com.pocketstream.app
 
+import com.pocketstream.app.BuildConfig
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -174,7 +175,9 @@ class RtspServerService : Service() {
                 add("--udp-timeout=10000")
                 // Increase RTSP session timeout (default is 60 seconds)
                 add("--rtsp-timeout=0")  // 0 = no timeout
-                add("-vvv")
+                if (BuildConfig.DEBUG) {
+                    add("-vvv")
+                }
             }
             libVLC = LibVLC(this, options)
 
