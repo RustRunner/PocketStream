@@ -1,4 +1,4 @@
-package com.tvsconnect.app.manager
+package com.pocketstream.app.manager
 
 import android.content.Context
 import android.net.ConnectivityManager

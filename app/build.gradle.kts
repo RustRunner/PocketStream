@@ -14,7 +14,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.tvsconnect.app"
+    namespace = "com.pocketstream.app"
     compileSdk = 34
 
     signingConfigs {
@@ -29,7 +29,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.tvsconnect.app"
+        applicationId = "com.pocketstream.app"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

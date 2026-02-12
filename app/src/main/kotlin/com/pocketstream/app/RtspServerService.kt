@@ -1,4 +1,4 @@
-package com.tvsconnect.app
+package com.pocketstream.app
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -19,7 +19,7 @@ import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.util.Timer
 import java.util.TimerTask
-import com.tvsconnect.app.util.TimeUtils
+import com.pocketstream.app.util.TimeUtils
 
 /**
  * Foreground service for RTSP server streaming of UDP video.
@@ -33,7 +33,7 @@ class RtspServerService : Service() {
         private const val CHANNEL_ID = "rtsp_server_channel"
 
         // Broadcast actions
-        const val ACTION_STATUS_UPDATE = "com.tvsconnect.app.RTSP_SERVER_STATUS_UPDATE"
+        const val ACTION_STATUS_UPDATE = "com.pocketstream.app.RTSP_SERVER_STATUS_UPDATE"
         const val EXTRA_IS_STREAMING = "is_streaming"
         const val EXTRA_UPTIME_SECONDS = "uptime_seconds"
         const val EXTRA_STREAM_URL = "stream_url"
@@ -41,8 +41,8 @@ class RtspServerService : Service() {
         const val EXTRA_BANDWIDTH_BYTES_PER_SEC = "bandwidth_bytes_per_sec"
 
         // Service actions
-        const val ACTION_START = "com.tvsconnect.app.action.START_RTSP_SERVER"
-        const val ACTION_STOP = "com.tvsconnect.app.action.STOP_RTSP_SERVER"
+        const val ACTION_START = "com.pocketstream.app.action.START_RTSP_SERVER"
+        const val ACTION_STOP = "com.pocketstream.app.action.STOP_RTSP_SERVER"
 
         // Intent extras
         const val EXTRA_UDP_PORT = "udp_port"

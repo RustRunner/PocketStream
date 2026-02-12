@@ -1,4 +1,4 @@
-package com.tvsconnect.app
+package com.pocketstream.app
 
 import android.content.ContentValues
 import android.content.Context
@@ -33,14 +33,14 @@ import org.videolan.libvlc.LibVLC
 import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
 import org.videolan.libvlc.interfaces.IVLCVout
-import com.tvsconnect.app.databinding.ActivityFullscreenVideoBinding
+import com.pocketstream.app.databinding.ActivityFullscreenVideoBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import com.tvsconnect.app.util.TimeUtils
+import com.pocketstream.app.util.TimeUtils
 
 /**
  * Fullscreen landscape video player activity.

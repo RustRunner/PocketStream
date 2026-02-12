@@ -32,7 +32,7 @@
             <!-- Section 1: Tethering Control (Combined with Network Discovery) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/tetheringCard"
-                style="@style/Widget.TVSConnect.CardView"
+                style="@style/Widget.PocketStream.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
@@ -55,7 +55,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/tethering_title"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Headline2"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Headline2"
                         app:layout_constraintEnd_toStartOf="@id/refreshButton"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -80,7 +80,7 @@
                     <!-- Main Connect button (disabled by default until tethering detected) -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/scanButton"
-                        style="@style/Widget.TVSConnect.Button"
+                        style="@style/Widget.PocketStream.Button"
                         android:layout_width="125dp"
                         android:layout_height="70dp"
                         android:enabled="false"
@@ -97,7 +97,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/tethering_description"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body2"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body2"
                         app:layout_constraintEnd_toStartOf="@id/tetheringGuideline50"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tetheringTitle" />
@@ -109,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="22dp"
                         android:text="@string/tethering_disconnected"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintEnd_toStartOf="@id/tetheringStatusIcon"
                         app:layout_constraintHorizontal_bias="0"
@@ -153,7 +153,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/connect_idle"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Caption"
                         android:textColor="@color/text_secondary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -165,7 +165,7 @@
             <!-- Section 2: Device Login -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/gpsdCard"
-                style="@style/Widget.TVSConnect.CardView"
+                style="@style/Widget.PocketStream.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
@@ -188,14 +188,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/gpsd_title"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Headline2"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Headline2"
                         app:layout_constraintEnd_toStartOf="@id/gpsdButton"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/gpsdButton"
-                        style="@style/Widget.TVSConnect.Button"
+                        style="@style/Widget.PocketStream.Button"
                         android:layout_width="125dp"
                         android:layout_height="70dp"
                         android:text="@string/start_gps_forwarding"
@@ -211,7 +211,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/gpsd_description"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body2"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body2"
                         app:layout_constraintEnd_toStartOf="@id/gpsdGuideline50"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/gpsdTitle" />
@@ -222,7 +222,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="22dp"
                         android:text="@string/target_ip_label"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/gpsdDescription" />
 
@@ -232,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/no_target_ip"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         android:textColor="@color/accent"
                         android:textIsSelectable="true"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -246,7 +246,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/gpsd_stopped"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Caption"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Caption"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/targetIpLabel" />
@@ -257,7 +257,7 @@
             <!-- Section 4: Video Stream -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/videoStreamCard"
-                style="@style/Widget.TVSConnect.CardView"
+                style="@style/Widget.PocketStream.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
@@ -280,7 +280,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/video_stream_title"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Headline2"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Headline2"
                         app:layout_constraintEnd_toStartOf="@id/videoStreamStatusIcon"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -301,7 +301,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/launchStreamButton"
-                        style="@style/Widget.TVSConnect.Button"
+                        style="@style/Widget.PocketStream.Button"
                         android:layout_width="125dp"
                         android:layout_height="70dp"
                         android:text="@string/launch_stream"
@@ -317,7 +317,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/video_stream_description"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body2"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body2"
                         app:layout_constraintEnd_toStartOf="@id/videoStreamGuideline50"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/videoStreamTitle" />
@@ -329,7 +329,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="22dp"
                         android:text="Phone IP:"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/videoStreamDescription" />
 
@@ -351,7 +351,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/stream_ip_not_detected"
-                            android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                            android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                             android:textColor="@color/accent"
                             android:textIsSelectable="true"
                             tools:text="10.111.10.19:8600" />
@@ -363,7 +363,7 @@
             <!-- Section 5: RTSP Server -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/rtspServerCard"
-                style="@style/Widget.TVSConnect.CardView"
+                style="@style/Widget.PocketStream.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
@@ -386,14 +386,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/rtsp_server_title"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Headline2"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Headline2"
                         app:layout_constraintEnd_toStartOf="@id/launchRtspButton"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/launchRtspButton"
-                        style="@style/Widget.TVSConnect.Button"
+                        style="@style/Widget.PocketStream.Button"
                         android:layout_width="125dp"
                         android:layout_height="70dp"
                         android:text="@string/launch_rtsp"
@@ -409,7 +409,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/rtsp_server_description"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body2"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body2"
                         app:layout_constraintEnd_toStartOf="@id/rtspGuideline50"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/rtspServerTitle" />
@@ -421,7 +421,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="22dp"
                         android:text="@string/rtsp_url_label"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/rtspServerDescription" />
 
@@ -456,7 +456,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/rtsp_url_not_available"
-                            android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                            android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                             android:textColor="@color/accent"
                             tools:text="rtsp://192.168.1.1:8554/stream" />
                     </LinearLayout>
@@ -468,7 +468,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/rtsp_credentials_label"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/rtspUrlLabel" />
 
@@ -479,7 +479,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/rtsp_auth_not_configured"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         android:textColor="@color/accent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/rtspCredentialsLabel"
@@ -493,7 +493,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/rtsp_uptime_label"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/rtspCredentialsLabel" />
 
@@ -504,7 +504,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/rtsp_uptime_default"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         android:textColor="@color/accent"
                         android:fontFamily="monospace"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -519,7 +519,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="@string/rtsp_bandwidth_label"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/rtspUptimeLabel" />
 
@@ -530,7 +530,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/rtsp_bandwidth_default"
-                        android:textAppearance="@style/TextAppearance.TVSConnect.Body1"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         android:textColor="@color/accent"
                         android:fontFamily="monospace"
                         app:layout_constraintEnd_toEndOf="parent"

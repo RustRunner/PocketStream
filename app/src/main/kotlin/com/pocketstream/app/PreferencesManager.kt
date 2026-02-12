@@ -1,4 +1,4 @@
-package com.tvsconnect.app
+package com.pocketstream.app
 
 import android.content.Context
 import android.content.SharedPreferences

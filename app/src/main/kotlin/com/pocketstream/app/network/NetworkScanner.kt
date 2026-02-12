@@ -1,4 +1,4 @@
-package com.tvsconnect.app.network
+package com.pocketstream.app.network
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers

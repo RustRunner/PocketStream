@@ -1,4 +1,4 @@
-package com.tvsconnect.app
+package com.pocketstream.app
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -31,14 +31,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
-import com.tvsconnect.app.databinding.ActivityMainBinding
-import com.tvsconnect.app.manager.TetheringManager
-import com.tvsconnect.app.network.NetworkInterfaceScanner
-import com.tvsconnect.app.network.NetworkScanner
+import com.pocketstream.app.databinding.ActivityMainBinding
+import com.pocketstream.app.manager.TetheringManager
+import com.pocketstream.app.network.NetworkInterfaceScanner
+import com.pocketstream.app.network.NetworkScanner
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.net.UnknownHostException
-import com.tvsconnect.app.util.TimeUtils
+import com.pocketstream.app.util.TimeUtils
 
 class MainActivity : AppCompatActivity() {
 

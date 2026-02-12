@@ -1,4 +1,4 @@
-package com.tvsconnect.app
+package com.pocketstream.app
 
 import org.junit.Assert.*
 import org.junit.Test
