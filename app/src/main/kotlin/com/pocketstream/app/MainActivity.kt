@@ -128,11 +128,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Setup action bar icon to left of title
-        supportActionBar?.let {
-            it.setDisplayShowHomeEnabled(true)
-            it.setIcon(R.drawable.ps_icon)
-        }
+        // Setup toolbar with centered icon + title
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         // Setup drawer
         drawerLayout = binding.drawerLayout
@@ -790,7 +788,7 @@ class MainActivity : AppCompatActivity() {
         streamPortInput.setText(preferencesManager.getStreamPort().toString())
         rtspEnableSwitch.isChecked = preferencesManager.isRtspEnabled()
         rtspPortInput.setText(preferencesManager.getRtspPort().toString())
-        rtspTokenValue.text = preferencesManager.getRtspToken()
+        rtspTokenValue.text = "Current Token: ${preferencesManager.getRtspToken()}"
 
         // Set up stream port change listener
         streamPortInput.addTextChangedListener(object : TextWatcher {
@@ -832,7 +830,7 @@ class MainActivity : AppCompatActivity() {
 
         regenerateTokenButton.setOnClickListener {
             val newToken = preferencesManager.regenerateRtspToken()
-            rtspTokenValue.text = newToken
+            rtspTokenValue.text = "Current Token: $newToken"
             Toast.makeText(this, getString(R.string.rtsp_token_regenerated), Toast.LENGTH_LONG).show()
             Log.d(TAG, "RTSP token regenerated")
         }

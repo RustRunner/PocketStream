@@ -10,8 +10,10 @@
     <!-- Drawer Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:layout_height="46dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
         android:background="@color/card_background"
         android:orientation="vertical">
 
@@ -160,26 +162,15 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp" />
 
-                <!-- Token Label -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rtsp_token_label"
-                    android:textAppearance="@style/TextAppearance.PocketStream.Caption"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp" />
-
-                <!-- Current Token Display -->
+                <!-- Current Token Display (inline) -->
                 <TextView
                     android:id="@+id/rtspTokenValue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:fontFamily="monospace"
-                    android:textColor="@color/accent"
-                    android:textAppearance="@style/TextAppearance.PocketStream.Caption"
-                    android:background="@drawable/edittext_outline"
-                    android:padding="10dp" />
+                    android:textColor="@color/text_primary"
+                    android:textAppearance="@style/TextAppearance.PocketStream.Caption" />
 
                 <!-- Regenerate Token Button -->
                 <com.google.android.material.button.MaterialButton
@@ -257,7 +248,7 @@
                         android:text="@string/about_license_type"
                         android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         android:textColor="@color/text_primary"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="6dp" />
 
                     <!-- View Licenses Button -->
                     <com.google.android.material.button.MaterialButton
@@ -265,11 +256,16 @@
                         style="@style/Widget.Material3.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:minHeight="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
                         android:text="@string/about_view_licenses"
                         android:textSize="12sp"
                         android:textColor="@color/accent"
                         android:paddingStart="0dp"
-                        android:layout_marginBottom="12dp" />
+                        android:layout_marginBottom="9dp" />
 
                     <!-- EULA / Terms -->
                     <TextView
