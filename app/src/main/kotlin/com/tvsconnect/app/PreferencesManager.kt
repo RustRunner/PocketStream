@@ -25,8 +25,6 @@ class PreferencesManager(context: Context) {
         // RTSP server settings
         private const val KEY_RTSP_ENABLED = "rtsp_enabled"
         private const val KEY_RTSP_PORT = "rtsp_port"
-        private const val KEY_RTSP_USERNAME = "rtsp_username"
-        private const val KEY_RTSP_PASSWORD = "rtsp_password"
         private const val KEY_RTSP_TOKEN = "rtsp_token"
         private const val DEFAULT_RTSP_PORT = 8554
         private const val TOKEN_LENGTH = 16
@@ -121,51 +119,6 @@ class PreferencesManager(context: Context) {
     }
 
     /**
-     * Gets the RTSP authentication username.
-     * Stored in encrypted preferences.
-     * @return The saved username, or empty string if not set.
-     */
-    fun getRtspUsername(): String {
-        return securePreferences.getString(KEY_RTSP_USERNAME, "") ?: ""
-    }
-
-    /**
-     * Saves the RTSP authentication username.
-     * Stored in encrypted preferences.
-     * @param username The username to save.
-     */
-    fun saveRtspUsername(username: String) {
-        securePreferences.edit().putString(KEY_RTSP_USERNAME, username).apply()
-    }
-
-    /**
-     * Gets the RTSP authentication password.
-     * Stored in encrypted preferences.
-     * @return The saved password, or empty string if not set.
-     */
-    fun getRtspPassword(): String {
-        return securePreferences.getString(KEY_RTSP_PASSWORD, "") ?: ""
-    }
-
-    /**
-     * Saves the RTSP authentication password.
-     * Stored in encrypted preferences.
-     * @param password The password to save.
-     */
-    fun saveRtspPassword(password: String) {
-        securePreferences.edit().putString(KEY_RTSP_PASSWORD, password).apply()
-    }
-
-    /**
-     * Checks if RTSP credentials are configured.
-     * Both username and password must be non-empty.
-     * @return true if both username and password are set.
-     */
-    fun hasRtspCredentials(): Boolean {
-        return getRtspUsername().isNotBlank() && getRtspPassword().isNotBlank()
-    }
-
-    /**
      * Gets the RTSP stream token for URL-based authentication.
      * If no token exists, generates and saves a new one.
      * Stored in encrypted preferences.
@@ -218,10 +171,6 @@ class PreferencesManager(context: Context) {
         sharedPreferences.edit()
             .putBoolean(KEY_RTSP_ENABLED, false)
             .putInt(KEY_RTSP_PORT, DEFAULT_RTSP_PORT)
-            .apply()
-        securePreferences.edit()
-            .putString(KEY_RTSP_USERNAME, "")
-            .putString(KEY_RTSP_PASSWORD, "")
             .apply()
     }
 }

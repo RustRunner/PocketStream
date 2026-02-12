@@ -47,8 +47,6 @@ class RtspServerService : Service() {
         // Intent extras
         const val EXTRA_UDP_PORT = "udp_port"
         const val EXTRA_RTSP_PORT = "rtsp_port"
-        const val EXTRA_USERNAME = "username"
-        const val EXTRA_PASSWORD = "password"
         const val EXTRA_TOKEN = "token"
     }
 
@@ -59,8 +57,6 @@ class RtspServerService : Service() {
     private var uptimeTimer: Timer? = null
     private var rtspPort: Int = 8554
     private var udpPort: Int = 8600
-    private var username: String = ""
-    private var password: String = ""
     private var streamToken: String = ""
 
     // Bandwidth tracking
@@ -91,8 +87,6 @@ class RtspServerService : Service() {
             ACTION_START -> {
                 udpPort = intent.getIntExtra(EXTRA_UDP_PORT, 8600)
                 rtspPort = intent.getIntExtra(EXTRA_RTSP_PORT, 8554)
-                username = intent.getStringExtra(EXTRA_USERNAME) ?: ""
-                password = intent.getStringExtra(EXTRA_PASSWORD) ?: ""
                 streamToken = intent.getStringExtra(EXTRA_TOKEN) ?: ""
                 startRtspServer()
             }
@@ -170,8 +164,6 @@ class RtspServerService : Service() {
 
         try {
             Log.d(TAG, "Starting RTSP server: UDP port $udpPort -> RTSP port $rtspPort")
-            Log.d(TAG, "Authentication: user=$username, password=${if (password.isNotEmpty()) "[SET]" else "[EMPTY]"}")
-
             // Start foreground service with notification
             startForeground(NOTIFICATION_ID, createNotification())
 
@@ -182,11 +174,6 @@ class RtspServerService : Service() {
                 add("--udp-timeout=10000")
                 // Increase RTSP session timeout (default is 60 seconds)
                 add("--rtsp-timeout=0")  // 0 = no timeout
-                // RTSP server authentication
-                if (username.isNotEmpty() && password.isNotEmpty()) {
-                    add("--rtsp-user=$username")
-                    add("--rtsp-pwd=$password")
-                }
                 add("-vvv")
             }
             libVLC = LibVLC(this, options)
