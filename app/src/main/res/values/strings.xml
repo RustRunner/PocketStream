@@ -33,17 +33,17 @@
     <string name="scan_no_devices">No devices found</string>
 
     <!-- Camera Config Section -->
-    <string name="gpsd_title">CAMERA CONFIG</string>
-    <string name="gpsd_description">Log in to system settings browser</string>
-    <string name="start_gps_forwarding">BROWSER</string>
-    <string name="stop_gps_forwarding">BROWSER</string>
+    <string name="browser_title">CAMERA CONFIG</string>
+    <string name="browser_description">Log in to system settings browser</string>
+    <string name="start_browser">BROWSER</string>
+    <string name="stop_browser">BROWSER</string>
     <string name="streaming_status">Browser status</string>
     <string name="target_ip_label">Camera IP:</string>
     <string name="no_target_ip">Not configured</string>
-    <string name="gpsd_stopped"></string>
-    <string name="gpsd_starting">Opening browser...</string>
-    <string name="gpsd_streaming"></string>
-    <string name="gpsd_error">Failed to launch browser</string>
+    <string name="browser_stopped"></string>
+    <string name="browser_starting">Opening browser...</string>
+    <string name="browser_streaming"></string>
+    <string name="browser_error">Failed to launch browser</string>
 
     <!-- Video Stream Section -->
     <string name="video_stream_title">VIDEO STREAM</string>

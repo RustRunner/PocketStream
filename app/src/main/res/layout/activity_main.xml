@@ -197,7 +197,7 @@
 
             <!-- Section 2: Device Login -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/gpsdCard"
+                android:id="@+id/browserCard"
                 style="@style/Widget.PocketStream.CardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -210,28 +210,28 @@
 
                     <!-- 50% guideline for description text -->
                     <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/gpsdGuideline50"
+                        android:id="@+id/browserGuideline50"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintGuide_percent="0.5" />
 
                     <TextView
-                        android:id="@+id/gpsdTitle"
+                        android:id="@+id/browserTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/gpsd_title"
+                        android:text="@string/browser_title"
                         android:textAppearance="@style/TextAppearance.PocketStream.Headline2"
-                        app:layout_constraintEnd_toStartOf="@id/gpsdButton"
+                        app:layout_constraintEnd_toStartOf="@id/browserButton"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/gpsdButton"
+                        android:id="@+id/browserButton"
                         style="@style/Widget.PocketStream.Button"
                         android:layout_width="125dp"
                         android:layout_height="70dp"
-                        android:text="@string/start_gps_forwarding"
+                        android:text="@string/start_browser"
                         android:textSize="12sp"
                         app:icon="@drawable/ic_globe"
                         app:iconSize="19dp"
@@ -239,15 +239,15 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/gpsdDescription"
+                        android:id="@+id/browserDescription"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="@string/gpsd_description"
+                        android:text="@string/browser_description"
                         android:textAppearance="@style/TextAppearance.PocketStream.Body2"
-                        app:layout_constraintEnd_toStartOf="@id/gpsdGuideline50"
+                        app:layout_constraintEnd_toStartOf="@id/browserGuideline50"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/gpsdTitle" />
+                        app:layout_constraintTop_toBottomOf="@id/browserTitle" />
 
                     <TextView
                         android:id="@+id/targetIpLabel"
@@ -257,7 +257,7 @@
                         android:text="@string/target_ip_label"
                         android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/gpsdDescription" />
+                        app:layout_constraintTop_toBottomOf="@id/browserDescription" />
 
                     <TextView
                         android:id="@+id/targetIp"
@@ -274,11 +274,11 @@
                         tools:text="192.168.42.129" />
 
                     <TextView
-                        android:id="@+id/gpsdStatus"
+                        android:id="@+id/browserStatus"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="@string/gpsd_stopped"
+                        android:text="@string/browser_stopped"
                         android:textAppearance="@style/TextAppearance.PocketStream.Caption"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

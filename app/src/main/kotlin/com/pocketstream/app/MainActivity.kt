@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             // Update UI with restored IPs
             detectedIpAddress?.let { ip ->
                 binding.targetIp.text = ip
-                binding.gpsdButton.isEnabled = true  // Re-enable Launch Browser button
+                binding.browserButton.isEnabled = true  // Re-enable Launch Browser button
                 binding.scanResultText.text = getString(R.string.connect_success)
                 binding.scanResultText.setTextColor(getColor(R.color.success))
             }
@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         // Restore button states based on current IP values
         // This ensures buttons work even after returning from other activities
         if (detectedIpAddress != null) {
-            binding.gpsdButton.isEnabled = true
+            binding.browserButton.isEnabled = true
             binding.targetIp.text = detectedIpAddress
             binding.scanResultText.text = getString(R.string.connect_success)
             binding.scanResultText.setTextColor(getColor(R.color.success))
@@ -219,9 +219,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDeviceLoginSection() {
         // Disable browser button until IP is detected
-        binding.gpsdButton.isEnabled = false
+        binding.browserButton.isEnabled = false
 
-        binding.gpsdButton.setOnClickListener {
+        binding.browserButton.setOnClickListener {
             launchBrowser()
         }
     }
@@ -246,7 +246,7 @@ class MainActivity : AppCompatActivity() {
 
             // Disable all buttons except Refresh when tethering disconnects
             binding.scanButton.isEnabled = false
-            binding.gpsdButton.isEnabled = false
+            binding.browserButton.isEnabled = false
             binding.launchStreamButton.isEnabled = false
 
             // Reset all scan results and data when tethering disconnects
@@ -258,7 +258,7 @@ class MainActivity : AppCompatActivity() {
             binding.scanResultText.text = getString(R.string.connect_idle)
             binding.scanResultText.setTextColor(getColor(R.color.text_secondary))
             binding.scanProgressBar.visibility = View.GONE
-            binding.gpsdStatus.text = getString(R.string.gpsd_stopped)
+            binding.browserStatus.text = getString(R.string.browser_stopped)
 
             // Update RTSP server card state (will disable since no connection)
             updateRtspCardState()
@@ -366,7 +366,7 @@ class MainActivity : AppCompatActivity() {
             binding.scanProgressBar.visibility = View.GONE
             binding.scanResultText.text = getString(R.string.connect_success)
             binding.scanResultText.setTextColor(getColor(R.color.success))
-            binding.gpsdButton.isEnabled = true
+            binding.browserButton.isEnabled = true
             binding.targetIp.text = detectedIpAddress
 
             // Update video stream URL
@@ -414,7 +414,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.d(TAG, "Launching browser to http://$detectedIpAddress")
-        binding.gpsdStatus.text = getString(R.string.gpsd_starting)
+        binding.browserStatus.text = getString(R.string.browser_starting)
 
         // Create intent to open URL in browser - force HTTP for local device
         val url = "http://$detectedIpAddress"
@@ -427,7 +427,7 @@ class MainActivity : AppCompatActivity() {
 
         try {
             startActivity(intent)
-            binding.gpsdStatus.text = getString(R.string.gpsd_streaming)
+            binding.browserStatus.text = getString(R.string.browser_streaming)
             Log.i(TAG, "Browser launched successfully to $url")
             Toast.makeText(
                 this,
@@ -436,7 +436,7 @@ class MainActivity : AppCompatActivity() {
             ).show()
         } catch (e: Exception) {
             Log.e(TAG, "Error launching browser", e)
-            binding.gpsdStatus.text = getString(R.string.gpsd_error)
+            binding.browserStatus.text = getString(R.string.browser_error)
             showErrorDialog("Browser Error", "Cannot open browser: ${e.message}")
         }
     }
