@@ -59,9 +59,10 @@ Then run:
 7. Optionally enable the **RTSP Server** in Settings to re-stream to other devices
 8. For remote viewing: install Tailscale on the phone, and share the RTSP URL with users on your Tailscale network — they can open it directly in VLC
 
+
   ## Screenshots
 
-  ### Main App
+  ### Initial Connection
   <table>
     <tr>
       <td><img src="https://github.com/user-attachments/assets/0d8896df-0fb9-40b1-a05c-cc59d9966ac8" width="250" /></td>
@@ -72,16 +73,17 @@ Then run:
 
   ### Fullscreen Player
   <table>
-    <tr>
+    <tr>                                                                                                                                                                      
       <td><img src="https://github.com/user-attachments/assets/ae6d4e21-383d-4cae-b5c3-94121dbdbd4b" width="400" /></td>
-      <td><img src="https://github.com/user-attachments/assets/aa550eb7-0f0c-403f-99d4-9804710ed19d" width="400" /></td>
-    </tr>
+      <td><img src="https://github.com/user-attachments/assets/14394c40-4404-4d42-a2f5-e2db30e8481e" width="400" /></td>                                                      
+    </tr>                                                                                                                                                                     
     <tr>
-      <td colspan="2"><img src="https://github.com/user-attachments/assets/71d4b6f8-232d-4564-863b-889360546680" width="400" /></td>
+      <td><img src="https://github.com/user-attachments/assets/aa550eb7-0f0c-403f-99d4-9804710ed19d" width="400" /></td>
+      <td><img src="https://github.com/user-attachments/assets/71d4b6f8-232d-4564-863b-889360546680" width="400" /></td>
     </tr>
   </table>
 
-  ### Settings
+  ### Settings and Re-streaming
   <table>
     <tr>
       <td><img src="https://github.com/user-attachments/assets/92ec3d5a-7bba-4913-999b-f832d72cc8a8" width="250" /></td>
