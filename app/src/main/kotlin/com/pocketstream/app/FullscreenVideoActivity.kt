@@ -52,6 +52,8 @@ class FullscreenVideoActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "FullscreenVideoActivity"
         private const val STREAM_CONNECTION_TIMEOUT_MS = 30000L // 30 seconds for UDP stream
+        private const val STALE_THRESHOLD_MS = 3000L
+        private const val HEALTH_CHECK_INTERVAL_MS = 500L
     }
 
     private lateinit var binding: ActivityFullscreenVideoBinding
@@ -65,6 +67,11 @@ class FullscreenVideoActivity : AppCompatActivity() {
     private var recordingStartTime: Long = 0
     private var recordingFile: File? = null
     private var timerJob: Job? = null
+
+    // Stream health monitoring
+    private var healthCheckJob: Job? = null
+    private var lastReadBytes: Long = 0
+    private var staleSinceTimestamp: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -537,6 +544,54 @@ class FullscreenVideoActivity : AppCompatActivity() {
         binding.recordingDot.clearAnimation()
     }
 
+    private fun startStreamHealthMonitor() {
+        healthCheckJob?.cancel()
+        lastReadBytes = 0
+        staleSinceTimestamp = 0
+        healthCheckJob = lifecycleScope.launch {
+            while (true) {
+                val currentBytes = mediaPlayer?.media?.stats?.readBytes?.toLong() ?: 0L
+                withContext(Dispatchers.Main) {
+                    if (lastReadBytes == 0L && currentBytes == 0L) {
+                        // Stats not yet available — skip to avoid false stale at startup
+                    } else if (currentBytes > lastReadBytes) {
+                        staleSinceTimestamp = 0
+                        updateStaleUI(false, 0)
+                    } else if (lastReadBytes > 0L) {
+                        val now = System.currentTimeMillis()
+                        if (staleSinceTimestamp == 0L) {
+                            staleSinceTimestamp = now
+                        }
+                        val staleDurationMs = now - staleSinceTimestamp
+                        if (staleDurationMs >= STALE_THRESHOLD_MS) {
+                            updateStaleUI(true, staleDurationMs / 1000)
+                        }
+                    }
+                    Unit
+                }
+                lastReadBytes = currentBytes
+                delay(HEALTH_CHECK_INTERVAL_MS)
+            }
+        }
+    }
+
+    private fun stopStreamHealthMonitor() {
+        healthCheckJob?.cancel()
+        healthCheckJob = null
+        lastReadBytes = 0
+        staleSinceTimestamp = 0
+        updateStaleUI(false, 0)
+    }
+
+    private fun updateStaleUI(stale: Boolean, seconds: Long) {
+        if (stale) {
+            binding.staleIndicator.text = "STALE ${seconds}s"
+            binding.staleIndicator.visibility = View.VISIBLE
+        } else {
+            binding.staleIndicator.visibility = View.GONE
+        }
+    }
+
     /**
      * Builds the sout option string for recording.
      */
@@ -606,6 +661,8 @@ class FullscreenVideoActivity : AppCompatActivity() {
                                     } else {
                                         // Buffering complete, hide the text
                                         binding.loadingText.visibility = View.GONE
+                                        staleSinceTimestamp = 0
+                                        updateStaleUI(false, 0)
                                         Log.d(TAG, "LibVLC: Buffering complete (100%)")
                                     }
                                 }
@@ -613,6 +670,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
                             MediaPlayer.Event.Playing -> {
                                 runOnUiThread {
                                     binding.loadingText.visibility = View.GONE
+                                    startStreamHealthMonitor()
                                     Log.i(TAG, "LibVLC: Fullscreen stream ready")
                                 }
                             }
@@ -620,6 +678,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
                                 runOnUiThread {
                                     binding.loadingText.visibility = View.VISIBLE
                                     binding.loadingText.text = "Stream ended"
+                                    stopStreamHealthMonitor()
                                     Log.d(TAG, "LibVLC: Stream stopped")
                                 }
                             }
@@ -628,6 +687,9 @@ class FullscreenVideoActivity : AppCompatActivity() {
                                     Log.e(TAG, "LibVLC: Encountered error")
                                     binding.loadingText.visibility = View.VISIBLE
                                     binding.loadingText.text = "Stream error"
+                                    stopStreamHealthMonitor()
+                                    binding.staleIndicator.text = "STALE"
+                                    binding.staleIndicator.visibility = View.VISIBLE
 
                                     Toast.makeText(
                                         this@FullscreenVideoActivity,
@@ -704,6 +766,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
         super.onPause()
         // Don't pause if recording - allow background operation
         if (!isRecording) {
+            stopStreamHealthMonitor()
             mediaPlayer?.pause()
         }
     }
@@ -711,6 +774,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mediaPlayer?.play()
+        startStreamHealthMonitor()
     }
 
     override fun onDestroy() {
@@ -718,6 +782,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
         if (isRecording) {
             stopRecording()
         }
+        stopStreamHealthMonitor()
 
         super.onDestroy()
         mediaPlayer?.apply {

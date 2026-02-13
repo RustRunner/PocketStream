@@ -44,7 +44,7 @@
     <color name="button_text_disabled">#666666</color>
 
     <!-- Card Colors -->
-    <color name="card_background">#1E1E1E</color>
+    <color name="card_background">#1B1B1B</color>
     <color name="card_elevated">#2C2C2C</color>
 
     <!-- Transparent Overlays -->

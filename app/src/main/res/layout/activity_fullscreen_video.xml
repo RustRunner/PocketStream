@@ -88,6 +88,23 @@
             android:fontFamily="monospace" />
     </LinearLayout>
 
+    <!-- Stale Stream Indicator (top-center, visible when stream data stops flowing) -->
+    <TextView
+        android:id="@+id/staleIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="monospace"
+        android:textColor="#FF1744"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="STALE 3s"
+        tools:visibility="visible" />
+
     <!-- Screenshot Button (bottom-left) -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/screenshotButton"
