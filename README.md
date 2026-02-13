@@ -49,7 +49,7 @@ Then run:
 ```
 
 ## Usage
-0. Enable **DHCP** on Ip Camera (Camera needs to recieve an IP assigned by the phone)
+0. Enable **DHCP** on IP Camera (Camera needs to recieve an IP assigned by the phone)
 1. Use **USB-ethernet adapter** to connect Phone to IP Camera
 2. Enable **Ethernet Tethering** in phone's Hotspot & Tethering settings
 3. Tap **Connect** — the app discovers the camera on the local network
@@ -83,17 +83,20 @@ Then run:
     </tr>
   </table>
 
-  ### Settings and Re-streaming
-  <table>
-    <tr>
-      <td><img src="https://github.com/user-attachments/assets/92ec3d5a-7bba-4913-999b-f832d72cc8a8" width="250" /></td>
-      <td><img src="https://github.com/user-attachments/assets/6f7ed3f8-0180-45c5-91cb-79d116e20b4b" width="250" /></td>
-      <td><img src="https://github.com/user-attachments/assets/fa127fff-a8c0-46c6-a2b4-292b904327cc" width="250" /></td>
+### Re-streaming
+  <table>                                                                                                                                                                     
+    <tr>                                                                                                                                                                      
+      <td><img src="https://github.com/user-attachments/assets/92ec3d5a-7bba-4913-999b-f832d72cc8a8" width="250" /></td>                                                      
+      <td><img src="https://github.com/user-attachments/assets/6f7ed3f8-0180-45c5-91cb-79d116e20b4b" width="250" /></td>                                                      
+      <td><img src="https://github.com/user-attachments/assets/fa127fff-a8c0-46c6-a2b4-292b904327cc" width="250" /></td>                                                      
     </tr>
     <tr>
+      <td></td>
+      <td></td>
       <td><img src="https://github.com/user-attachments/assets/d8c809a7-2bad-4543-9ffb-bb911ca5fc9d" width="250" /></td>
     </tr>
   </table>
+
 
 
 
