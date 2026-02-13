@@ -898,7 +898,7 @@ class MainActivity : AppCompatActivity() {
             |License: Apache 2.0
             |
             |Full license details available at:
-            |https://github.com/your-repo/PocketStream
+            |https://github.com/RustRunner/PocketStream
         """.trimMargin()
 
         AlertDialog.Builder(this)
