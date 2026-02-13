@@ -1,6 +1,8 @@
-#<img width="1024" height="1024" alt="PocketStream_Icon_Launcher" src="https://github.com/user-attachments/assets/23005a47-d69c-4d61-b01a-1a88268bfaee" />
- 
-PocketStream
+  <div align="center">                                                                                                                                                        
+    <img src="https://github.com/user-attachments/assets/23005a47-d69c-4d61-b01a-1a88268bfaee" width="128" />
+    <h1>PocketStream</h1>                                                                                                                                                     
+    <p>UDP/RTSP video streaming for Android</p>             
+  </div>
 
 Android app that enables direct ethernet connections to IP cameras. Manages UDP live view, screenshots, recordings, and RTSP re-streaming over WiFi or Cellular — all from the phone.
 
@@ -57,7 +59,44 @@ Then run:
 7. Optionally enable the **RTSP Server** in Settings to re-stream to other devices
 8. For remote viewing: install Tailscale on the phone, and share the RTSP URL with users on your Tailscale network — they can open it directly in VLC
 
+  ## Screenshots
+
+  ### Main App
+  <table>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/0d8896df-0fb9-40b1-a05c-cc59d9966ac8" width="250" /></td>
+      <td><img src="https://github.com/user-attachments/assets/ed30d17f-6a8a-41d5-8e37-f55a0696a129" width="250" /></td>
+      <td><img src="https://github.com/user-attachments/assets/8bf72adc-4578-4c43-b551-fca370ef20a7" width="250" /></td>
+    </tr>
+  </table>
+
+  ### Fullscreen Player
+  <table>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/ae6d4e21-383d-4cae-b5c3-94121dbdbd4b" width="400" /></td>
+      <td><img src="https://github.com/user-attachments/assets/aa550eb7-0f0c-403f-99d4-9804710ed19d" width="400" /></td>
+    </tr>
+    <tr>
+      <td colspan="2"><img src="https://github.com/user-attachments/assets/71d4b6f8-232d-4564-863b-889360546680" width="400" /></td>
+    </tr>
+  </table>
+
+  ### Settings
+  <table>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/92ec3d5a-7bba-4913-999b-f832d72cc8a8" width="250" /></td>
+      <td><img src="https://github.com/user-attachments/assets/6f7ed3f8-0180-45c5-91cb-79d116e20b4b" width="250" /></td>
+      <td><img src="https://github.com/user-attachments/assets/fa127fff-a8c0-46c6-a2b4-292b904327cc" width="250" /></td>
+    </tr>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/d8c809a7-2bad-4543-9ffb-bb911ca5fc9d" width="250" /></td>
+    </tr>
+  </table>
+
+
+
 ## License
+
 
 This project is licensed under the [GNU Affero General Public License v3.0](LICENSE).
 
