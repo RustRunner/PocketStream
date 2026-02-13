@@ -1,4 +1,6 @@
-# PocketStream
+#<img width="1024" height="1024" alt="PocketStream_Icon_Launcher" src="https://github.com/user-attachments/assets/23005a47-d69c-4d61-b01a-1a88268bfaee" />
+ 
+PocketStream
 
 Android app that enables direct ethernet connections to IP cameras. Manages UDP live view, screenshots, recordings, and RTSP re-streaming over WiFi or Cellular — all from the phone.
 
