@@ -1,10 +1,10 @@
 # PocketStream
 
-Android app that facilitates direct ethernet connections to IP cameras. Manages live view, screenshots, recordings, and RTSP re-streaming over WiFi or Cellular — all from the phone.
+Android app that enables direct ethernet connections to IP cameras. Manages UDP live view, screenshots, recordings, and RTSP re-streaming over WiFi or Cellular — all from the phone.
 
 ## Features
 
-- **Ethernet Tethering** — Connects to IP cameras via USB/ethernet tethering with automatic network discovery
+- **Ethernet Tethering** — Connects to IP cameras via ethernet tethering with automatic network discovery
 - **Live View** — Real-time UDP video streaming powered by LibVLC with fullscreen landscape mode
 - **Screenshots & Recording** — Capture stills or record video directly from the live stream
 - **Camera Config** — Launch the camera's web interface for settings from within the app
@@ -45,14 +45,15 @@ Then run:
 ```
 
 ## Usage
-
-1. Connect an IP camera to your phone via USB-ethernet adapter
-2. Enable **Ethernet Tethering** in your phone's Hotspot & Tethering settings
+0. Enable **DHCP** on Ip Camera (Camera needs to recieve an IP assigned by the phone)
+1. Use **USB-ethernet adapter** to connect Phone to IP Camera
+2. Enable **Ethernet Tethering** in phone's Hotspot & Tethering settings
 3. Tap **Connect** — the app discovers the camera on the local network
-4. Use **Browser** to access the camera's web config if needed
-5. Tap **Stream** to start the live video feed
-6. Optionally enable the **RTSP Server** in Settings to re-stream to other devices
-7. For remote viewing: install Tailscale on the phone, and share the RTSP URL with users on your Tailscale network — they can open it directly in VLC
+4. Use **Browser** to access the camera's web config
+5. Copy **Phone IP** to camera's web config as UDP stream destination
+6. Tap **Stream** to start the live video feed
+7. Optionally enable the **RTSP Server** in Settings to re-stream to other devices
+8. For remote viewing: install Tailscale on the phone, and share the RTSP URL with users on your Tailscale network — they can open it directly in VLC
 
 ## License
 
