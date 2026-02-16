@@ -5,33 +5,37 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.videolan.libvlc.LibVLC
 import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
 import java.net.Inet4Address
 import java.net.NetworkInterface
-import java.util.Timer
-import java.util.TimerTask
 import com.pocketstream.app.util.TimeUtils
 
 /**
  * Foreground service for RTSP server streaming of UDP video.
  * Receives UDP stream via LibVLC and re-broadcasts via authenticated RTSP.
  */
-class RtspServerService : Service() {
+class RtspServerService : LifecycleService() {
 
     companion object {
         private const val TAG = "RtspServerService"
         private const val NOTIFICATION_ID = 1001
         private const val CHANNEL_ID = "rtsp_server_channel"
+        private const val NOTIFICATION_UPDATE_INTERVAL = 5
+        private const val BANDWIDTH_WINDOW_SIZE = 5
 
         // Broadcast actions
         const val ACTION_STATUS_UPDATE = "com.pocketstream.app.RTSP_SERVER_STATUS_UPDATE"
@@ -55,7 +59,7 @@ class RtspServerService : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private var isStreaming = false
     private var startTime: Long = 0
-    private var uptimeTimer: Timer? = null
+    private var uptimeJob: Job? = null
     private var rtspPort: Int = 8554
     private var udpPort: Int = 8600
     private var streamToken: String = ""
@@ -64,6 +68,12 @@ class RtspServerService : Service() {
     private var lastBytesRead: Long = 0
     private var lastBytesTime: Long = 0
     private var currentBandwidth: Long = 0 // bytes per second
+    private var bandwidthSamples = LongArray(BANDWIDTH_WINDOW_SIZE)
+    private var bandwidthSampleIndex = 0
+    private var bandwidthSampleCount = 0
+
+    // Notification throttling
+    private var notificationTickCount = 0
 
     /**
      * Gets the stream path, including token if configured.
@@ -84,6 +94,7 @@ class RtspServerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         when (intent?.action) {
             ACTION_START -> {
                 udpPort = intent.getIntExtra(EXTRA_UDP_PORT, 8600)
@@ -99,7 +110,10 @@ class RtspServerService : Service() {
         return START_NOT_STICKY
     }
 
-    override fun onBind(intent: Intent?): IBinder? = null
+    override fun onBind(intent: Intent): IBinder? {
+        super.onBind(intent)
+        return null
+    }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -233,6 +247,7 @@ class RtspServerService : Service() {
 
         } catch (e: Exception) {
             Log.e(TAG, "Error starting RTSP server", e)
+            releaseResources()
             broadcastStatus(error = e.message ?: "Unknown error")
             stopSelf()
         }
@@ -250,14 +265,8 @@ class RtspServerService : Service() {
             // Stop timer
             stopUptimeTimer()
 
-            // Stop MediaPlayer
-            mediaPlayer?.stop()
-            mediaPlayer?.release()
-            mediaPlayer = null
-
-            // Release LibVLC
-            libVLC?.release()
-            libVLC = null
+            // Release VLC resources
+            releaseResources()
 
             // Update state
             isStreaming = false
@@ -272,26 +281,51 @@ class RtspServerService : Service() {
         }
     }
 
+    private fun releaseResources() {
+        try {
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            Log.d(TAG, "MediaPlayer released")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error releasing MediaPlayer", e)
+        }
+        mediaPlayer = null
+
+        try {
+            libVLC?.release()
+            Log.d(TAG, "LibVLC released")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error releasing LibVLC", e)
+        }
+        libVLC = null
+    }
+
     private fun startUptimeTimer() {
         // Initialize bandwidth tracking
         lastBytesRead = 0
         lastBytesTime = System.currentTimeMillis()
         currentBandwidth = 0
+        bandwidthSamples = LongArray(BANDWIDTH_WINDOW_SIZE)
+        bandwidthSampleIndex = 0
+        bandwidthSampleCount = 0
+        notificationTickCount = 0
 
-        uptimeTimer = Timer()
-        uptimeTimer?.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
+        uptimeJob = lifecycleScope.launch {
+            while (true) {
+                delay(1000)
                 if (isStreaming) {
-                    // Calculate bandwidth from LibVLC stats
                     updateBandwidth()
                     broadcastStatus()
-                    // Update notification
-                    val uptimeSeconds = (System.currentTimeMillis() - startTime) / 1000
-                    val notificationManager = getSystemService(NotificationManager::class.java)
-                    notificationManager.notify(NOTIFICATION_ID, createNotification(uptimeSeconds))
+                    notificationTickCount++
+                    if (notificationTickCount >= NOTIFICATION_UPDATE_INTERVAL) {
+                        notificationTickCount = 0
+                        val uptimeSeconds = (System.currentTimeMillis() - startTime) / 1000
+                        val notificationManager = getSystemService(NotificationManager::class.java)
+                        notificationManager.notify(NOTIFICATION_ID, createNotification(uptimeSeconds))
+                    }
                 }
             }
-        }, 1000, 1000) // Update every second
+        }
     }
 
     /**
@@ -309,8 +343,13 @@ class RtspServerService : Service() {
                 if (timeDelta > 0 && lastBytesRead > 0) {
                     val bytesDelta = currentBytes - lastBytesRead
                     if (bytesDelta >= 0) {
-                        // Calculate bytes per second
-                        currentBandwidth = (bytesDelta * 1000) / timeDelta
+                        val instantaneous = (bytesDelta * 1000) / timeDelta
+                        bandwidthSamples[bandwidthSampleIndex] = instantaneous
+                        bandwidthSampleIndex = (bandwidthSampleIndex + 1) % BANDWIDTH_WINDOW_SIZE
+                        if (bandwidthSampleCount < BANDWIDTH_WINDOW_SIZE) bandwidthSampleCount++
+                        var sum = 0L
+                        for (i in 0 until bandwidthSampleCount) sum += bandwidthSamples[i]
+                        currentBandwidth = sum / bandwidthSampleCount
                     }
                 }
 
@@ -323,8 +362,8 @@ class RtspServerService : Service() {
     }
 
     private fun stopUptimeTimer() {
-        uptimeTimer?.cancel()
-        uptimeTimer = null
+        uptimeJob?.cancel()
+        uptimeJob = null
     }
 
     private fun broadcastStatus(error: String? = null) {
