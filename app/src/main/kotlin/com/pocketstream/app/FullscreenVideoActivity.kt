@@ -35,6 +35,7 @@ import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
 import org.videolan.libvlc.interfaces.IVLCVout
 import com.pocketstream.app.databinding.ActivityFullscreenVideoBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -343,15 +344,17 @@ class FullscreenVideoActivity : AppCompatActivity() {
 
     /**
      * Stops recording and saves the file to MediaStore.
+     * @param restartPlayback If true, restarts normal playback after stopping recording.
+     *                        Pass false when called from onDestroy to avoid playing on a destroyed surface.
      */
-    private fun stopRecording() {
+    private fun stopRecording(restartPlayback: Boolean = true) {
         if (!isRecording) {
             Log.w(TAG, "Not currently recording")
             return
         }
 
         try {
-            Log.d(TAG, "Stopping recording")
+            Log.d(TAG, "Stopping recording (restartPlayback=$restartPlayback)")
 
             // Stop timer
             stopRecordingTimer()
@@ -359,13 +362,15 @@ class FullscreenVideoActivity : AppCompatActivity() {
             // Stop playback to finalize recording
             mediaPlayer?.stop()
 
-            // Restart normal playback
-            val media = Media(libVLC, Uri.parse(streamUrl!!))
-            media.addOption(":network-caching=1000")
-            media.addOption(":live-caching=500")
-            mediaPlayer?.media = media
-            media.release()
-            mediaPlayer?.play()
+            // Restart normal playback only if the activity is still alive
+            if (restartPlayback) {
+                val media = Media(libVLC, Uri.parse(streamUrl!!))
+                media.addOption(":network-caching=1000")
+                media.addOption(":live-caching=500")
+                mediaPlayer?.media = media
+                media.release()
+                mediaPlayer?.play()
+            }
 
             // Update state
             isRecording = false
@@ -373,10 +378,12 @@ class FullscreenVideoActivity : AppCompatActivity() {
             // Update UI
             updateRecordingUI(false)
 
-            // Copy recording from cache to MediaStore on background thread
+            // Copy recording from cache to MediaStore on background thread.
+            // Use a standalone CoroutineScope so the save completes even if
+            // the activity is destroyed (e.g., when called from onDestroy).
             val tempFile = recordingFile
             if (tempFile != null && tempFile.exists()) {
-                lifecycleScope.launch(Dispatchers.IO) {
+                CoroutineScope(Dispatchers.IO).launch {
                     saveRecordingToMediaStore(tempFile)
                 }
             } else {
@@ -425,7 +432,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
-                            this@FullscreenVideoActivity,
+                            applicationContext,
                             "Recording saved to Pictures/PocketStream/$filename",
                             Toast.LENGTH_LONG
                         ).show()
@@ -466,7 +473,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
             Log.e(TAG, "Error saving recording to MediaStore", e)
             withContext(Dispatchers.Main) {
                 Toast.makeText(
-                    this@FullscreenVideoActivity,
+                    applicationContext,
                     "Failed to save recording: ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -778,9 +785,10 @@ class FullscreenVideoActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        // Stop recording if active before destroying
+        // Stop recording if active before destroying — don't restart playback
+        // since the surface and player are about to be released
         if (isRecording) {
-            stopRecording()
+            stopRecording(restartPlayback = false)
         }
         stopStreamHealthMonitor()
 
