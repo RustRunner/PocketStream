@@ -26,18 +26,13 @@ class TetheringManager(private val context: Context) {
 
     /**
      * Checks if Ethernet tethering is currently active.
-     * Only detects "eth" interfaces, excludes USB (rndis), Bluetooth, and WiFi.
+     * Detects interfaces starting with "eth" (e.g., eth0).
      * @return true if Ethernet tethering is active, false otherwise
      */
     suspend fun isEthernetTetheringActive(): Boolean = withContext(Dispatchers.IO) {
         try {
             val tetheredIfaces = getTetheredIfaces()
-            // Only check for "eth" interfaces - exclude rndis (USB), bt (Bluetooth), wlan (WiFi)
-            val isActive = tetheredIfaces.any { iface ->
-                iface.contains("eth", ignoreCase = true) &&
-                !iface.contains("rndis", ignoreCase = true) &&
-                !iface.contains("usb", ignoreCase = true)
-            }
+            val isActive = tetheredIfaces.any { it.startsWith("eth", ignoreCase = true) }
             Log.d(TAG, "Ethernet tethering active: $isActive, interfaces: $tetheredIfaces")
             isActive
         } catch (e: Exception) {
@@ -54,7 +49,11 @@ class TetheringManager(private val context: Context) {
         return try {
             val method: Method = connectivityManager.javaClass.getDeclaredMethod("getTetheredIfaces")
             val result = method.invoke(connectivityManager)
-            (result as? Array<*>)?.mapNotNull { it as? String } ?: emptyList()
+            when (result) {
+                is Array<*> -> result.mapNotNull { it as? String }
+                is List<*> -> result.mapNotNull { it as? String }
+                else -> emptyList()
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get tethered interfaces: ${e.message}", e)
             emptyList()

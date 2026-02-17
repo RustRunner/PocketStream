@@ -398,8 +398,7 @@
                 android:id="@+id/rtspServerCard"
                 style="@style/Widget.PocketStream.CardView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -453,7 +452,7 @@
                         android:id="@+id/rtspUrlLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="22dp"
+                        android:layout_marginTop="28dp"
                         android:text="@string/rtsp_url_label"
                         android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constraintStart_toStartOf="parent"
@@ -551,7 +550,7 @@
                         android:id="@+id/rtspBandwidthLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="8dp"
                         android:text="@string/rtsp_bandwidth_label"
                         android:textAppearance="@style/TextAppearance.PocketStream.Body1"
                         app:layout_constraintStart_toStartOf="parent"

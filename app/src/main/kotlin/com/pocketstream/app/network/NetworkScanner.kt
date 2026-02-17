@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Scans IP addresses on a network to discover active devices.
@@ -38,19 +39,21 @@ class NetworkScanner {
 
         val activeIps = mutableListOf<String>()
         val totalIps = endIp - startIp + 1
+        val completedCount = AtomicInteger(0)
 
         // Scan IPs in parallel using async
         val scanJobs = (startIp..endIp).map { lastOctet ->
             async {
                 val ipAddress = "$subnet.$lastOctet"
-                onProgress?.invoke(lastOctet - startIp + 1, totalIps)
 
-                if (isHostReachable(ipAddress)) {
+                val result = if (isHostReachable(ipAddress)) {
                     Log.d(TAG, "Found active IP: $ipAddress")
                     ipAddress
                 } else {
                     null
                 }
+                onProgress?.invoke(completedCount.incrementAndGet(), totalIps)
+                result
             }
         }
 

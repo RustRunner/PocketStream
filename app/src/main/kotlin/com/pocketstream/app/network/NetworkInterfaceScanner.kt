@@ -46,7 +46,7 @@ class NetworkInterfaceScanner {
                 val info = createInterfaceInfo(netInterface)
                 interfaceList.add(info)
 
-                Log.d(TAG, "Found interface: ${info.name} (${info.displayName}), " +
+                Log.v(TAG, "Found interface: ${info.name} (${info.displayName}), " +
                         "IP: ${info.ipAddress}, Up: ${info.isUp}")
             }
 
@@ -58,7 +58,7 @@ class NetworkInterfaceScanner {
     }
 
     /**
-     * Gets only active tethering interfaces (rndis0, eth0, usb0, etc.).
+     * Gets only active Ethernet tethering interfaces (e.g., eth0).
      * @return List of active tethering interfaces
      */
     suspend fun getTetheringInterfaces(): List<InterfaceInfo> = withContext(Dispatchers.IO) {
@@ -67,7 +67,7 @@ class NetworkInterfaceScanner {
             val tetheringInterfaces = allInterfaces.filter { iface ->
                 // Check if interface name matches tethering patterns
                 val matchesPattern = TETHERING_INTERFACE_PATTERNS.any { pattern ->
-                    iface.name.contains(pattern, ignoreCase = true)
+                    iface.name.startsWith(pattern, ignoreCase = true)
                 }
 
                 // Interface must be up and not loopback
@@ -94,7 +94,7 @@ class NetworkInterfaceScanner {
         val tetheringInterfaces = getTetheringInterfaces()
 
         // Only look for Ethernet interfaces
-        val primary = tetheringInterfaces.firstOrNull { it.name.contains("eth", ignoreCase = true) }
+        val primary = tetheringInterfaces.firstOrNull { it.name.startsWith("eth", ignoreCase = true) }
 
         if (primary != null) {
             Log.d(TAG, "Primary tethering interface: ${primary.name} - ${primary.ipAddress}")
