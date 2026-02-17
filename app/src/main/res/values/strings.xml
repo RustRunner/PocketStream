@@ -3,7 +3,7 @@
 
     <!-- Tethering Section -->
     <string name="tethering_title">ETHERNET TETHERING</string>
-    <string name="tethering_description">Enable in phone -> Hotspot &amp; Tethering. Refresh if needed.</string>
+    <string name="tethering_description">Enable in phone -> Hotspot &amp; Tethering. Refresh.</string>
     <string name="connection_status">Connection status</string>
     <string name="tethering_connected">Tethering Active</string>
     <string name="tethering_disconnected">Tethering Not Detected - Please check settings</string>

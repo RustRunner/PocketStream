@@ -115,7 +115,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/scanButton"
                         style="@style/Widget.PocketStream.Button"
-                        android:layout_width="112dp"
+                        android:layout_width="130dp"
                         android:layout_height="63dp"
                         android:enabled="false"
                         android:text="@string/connect_button"
@@ -226,7 +226,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/browserButton"
                         style="@style/Widget.PocketStream.Button"
-                        android:layout_width="112dp"
+                        android:layout_width="130dp"
                         android:layout_height="63dp"
                         android:text="@string/start_browser"
                         android:textSize="11sp"
@@ -322,7 +322,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/launchStreamButton"
                         style="@style/Widget.PocketStream.Button"
-                        android:layout_width="112dp"
+                        android:layout_width="130dp"
                         android:layout_height="63dp"
                         android:text="@string/launch_stream"
                         android:textSize="11sp"
@@ -414,7 +414,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/launchRtspButton"
                         style="@style/Widget.PocketStream.Button"
-                        android:layout_width="112dp"
+                        android:layout_width="130dp"
                         android:layout_height="63dp"
                         android:text="@string/launch_rtsp"
                         android:textSize="11sp"
