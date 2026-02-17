@@ -7,7 +7,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -57,6 +56,7 @@ class RtspServerService : LifecycleService() {
         // Reconnection constants
         private const val MAX_RECONNECT_ATTEMPTS = 5
         private const val RECONNECT_DELAY_MS = 3000L
+        private const val IP_REFRESH_INTERVAL = 10 // Refresh cached IP every 10 seconds
     }
 
     private var libVLC: LibVLC? = null
@@ -83,6 +83,10 @@ class RtspServerService : LifecycleService() {
 
     // Notification throttling
     private var notificationTickCount = 0
+
+    // Cached local IP address (refreshed every IP_REFRESH_INTERVAL ticks)
+    private var cachedLocalIp: String? = null
+    private var ipRefreshTickCount = 0
 
     /**
      * Gets the stream path, including token if configured.
@@ -126,19 +130,17 @@ class RtspServerService : LifecycleService() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                getString(R.string.rtsp_notification_channel_name),
-                NotificationManager.IMPORTANCE_LOW
-            ).apply {
-                description = getString(R.string.rtsp_notification_channel_description)
-                setShowBadge(false)
-            }
-
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            getString(R.string.rtsp_notification_channel_name),
+            NotificationManager.IMPORTANCE_LOW
+        ).apply {
+            description = getString(R.string.rtsp_notification_channel_description)
+            setShowBadge(false)
         }
+
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun createNotification(uptimeSeconds: Long = 0): Notification {
@@ -163,7 +165,7 @@ class RtspServerService : LifecycleService() {
         // Format uptime
         val uptimeText = TimeUtils.formatUptime(uptimeSeconds)
 
-        val localIp = getLocalIpAddress() ?: "unknown"
+        val localIp = cachedLocalIp ?: "unknown"
         val streamUrl = "rtsp://$localIp:$rtspPort${getStreamPath()}"
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
@@ -181,6 +183,65 @@ class RtspServerService : LifecycleService() {
             .build()
     }
 
+    /**
+     * Initializes LibVLC, creates a MediaPlayer with event handling,
+     * configures the RTSP sout pipeline, and starts playback.
+     */
+    private fun initializeVlcPipeline() {
+        val isRtspInput = inputUrl.startsWith("rtsp://")
+
+        val options = ArrayList<String>().apply {
+            add("--network-caching=1000")
+            add("--live-caching=500")
+            if (isRtspInput) {
+                add("--rtsp-tcp")
+            } else {
+                add("--udp-timeout=10000")
+            }
+            add("--rtsp-timeout=0")  // No timeout — stream runs until stopped
+            if (BuildConfig.DEBUG) {
+                add("-vvv")
+            }
+        }
+        libVLC = LibVLC(this, options)
+
+        mediaPlayer = MediaPlayer(libVLC).apply {
+            setEventListener { event ->
+                when (event.type) {
+                    MediaPlayer.Event.Playing -> {
+                        Log.i(TAG, "RTSP server: Playing/Streaming")
+                        reconnectAttempts = 0
+                    }
+                    MediaPlayer.Event.EncounteredError -> {
+                        Log.e(TAG, "RTSP server: Error encountered")
+                        broadcastStatus(error = "Stream error occurred")
+                        if (isRtspInput) {
+                            scheduleReconnect()
+                        }
+                    }
+                    MediaPlayer.Event.Stopped -> {
+                        Log.d(TAG, "RTSP server: Stopped")
+                    }
+                }
+            }
+        }
+
+        // Create media with sout for RTSP streaming
+        // Explicitly bind to 0.0.0.0 to allow remote access (WiFi, Tailscale, etc.)
+        val media = Media(libVLC, Uri.parse(inputUrl))
+        val streamPath = getStreamPath()
+        media.addOption(":sout=#rtp{sdp=rtsp://0.0.0.0:$rtspPort$streamPath}")
+        media.addOption(":sout-keep")
+        media.addOption(":network-caching=1000")
+
+        mediaPlayer?.media = media
+        // Note: do NOT call media.release() here — MediaPlayer needs the
+        // live Media reference so that mediaPlayer.media.stats remains
+        // accessible for bandwidth tracking.
+
+        mediaPlayer?.play()
+    }
+
     private fun startRtspServer() {
         if (isStreaming) {
             Log.w(TAG, "RTSP server already running")
@@ -188,71 +249,11 @@ class RtspServerService : LifecycleService() {
         }
 
         try {
-            val isRtspInput = inputUrl.startsWith("rtsp://")
             Log.d(TAG, "Starting RTSP server: input=$inputUrl -> RTSP port $rtspPort")
-            // Start foreground service with notification
+            Log.d(TAG, "RTSP stream path: ${getStreamPath()} (token: ${if (streamToken.isNotBlank()) "enabled" else "disabled"})")
+
             startForeground(NOTIFICATION_ID, createNotification())
-
-            // Initialize LibVLC with options conditional on input protocol
-            val options = ArrayList<String>().apply {
-                add("--network-caching=1000")
-                add("--live-caching=500")
-                if (isRtspInput) {
-                    add("--rtsp-tcp")
-                    add("--rtsp-timeout=10")
-                } else {
-                    add("--udp-timeout=10000")
-                }
-                // Increase output RTSP session timeout (default is 60 seconds)
-                add("--rtsp-timeout=0")  // 0 = no timeout for output
-                if (BuildConfig.DEBUG) {
-                    add("-vvv")
-                }
-            }
-            libVLC = LibVLC(this, options)
-
-            // Create MediaPlayer
-            mediaPlayer = MediaPlayer(libVLC).apply {
-                setEventListener { event ->
-                    when (event.type) {
-                        MediaPlayer.Event.Playing -> {
-                            Log.i(TAG, "RTSP server: Playing/Streaming")
-                            reconnectAttempts = 0
-                        }
-                        MediaPlayer.Event.EncounteredError -> {
-                            Log.e(TAG, "RTSP server: Error encountered")
-                            broadcastStatus(error = "Stream error occurred")
-                            if (isRtspInput) {
-                                scheduleReconnect()
-                            }
-                        }
-                        MediaPlayer.Event.Stopped -> {
-                            Log.d(TAG, "RTSP server: Stopped")
-                        }
-                    }
-                }
-            }
-
-            // Create media with sout for RTSP streaming
-            val media = Media(libVLC, Uri.parse(inputUrl))
-
-            // Sout option: receive UDP and serve via RTSP
-            // Explicitly bind to 0.0.0.0 to allow remote access (WiFi, Tailscale, etc.)
-            // Token is included in path for URL-based authentication
-            val streamPath = getStreamPath()
-            val soutOption = ":sout=#rtp{sdp=rtsp://0.0.0.0:$rtspPort$streamPath}"
-            Log.d(TAG, "RTSP stream path: $streamPath (token: ${if (streamToken.isNotBlank()) "enabled" else "disabled"})")
-            media.addOption(soutOption)
-            media.addOption(":sout-keep")
-            media.addOption(":network-caching=1000")
-
-            mediaPlayer?.media = media
-            // Note: do NOT call media.release() here — MediaPlayer needs the
-            // live Media reference so that mediaPlayer.media.stats remains
-            // accessible for bandwidth tracking.
-
-            // Start playback (which starts the RTSP server)
-            mediaPlayer?.play()
+            initializeVlcPipeline()
 
             // Update state
             isStreaming = true
@@ -322,51 +323,7 @@ class RtspServerService : LifecycleService() {
 
             try {
                 releaseResources()
-                // Re-initialize and restart
-                val isRtspInput = inputUrl.startsWith("rtsp://")
-                val options = ArrayList<String>().apply {
-                    add("--network-caching=1000")
-                    add("--live-caching=500")
-                    if (isRtspInput) {
-                        add("--rtsp-tcp")
-                        add("--rtsp-timeout=10")
-                    } else {
-                        add("--udp-timeout=10000")
-                    }
-                    add("--rtsp-timeout=0")
-                    if (BuildConfig.DEBUG) {
-                        add("-vvv")
-                    }
-                }
-                libVLC = LibVLC(this@RtspServerService, options)
-
-                mediaPlayer = MediaPlayer(libVLC).apply {
-                    setEventListener { event ->
-                        when (event.type) {
-                            MediaPlayer.Event.Playing -> {
-                                Log.i(TAG, "RTSP server: Reconnected successfully")
-                                reconnectAttempts = 0
-                            }
-                            MediaPlayer.Event.EncounteredError -> {
-                                Log.e(TAG, "RTSP server: Error on reconnect attempt")
-                                broadcastStatus(error = "Reconnect failed")
-                                scheduleReconnect()
-                            }
-                            MediaPlayer.Event.Stopped -> {
-                                Log.d(TAG, "RTSP server: Stopped")
-                            }
-                        }
-                    }
-                }
-
-                val media = Media(libVLC, Uri.parse(inputUrl))
-                val streamPath = getStreamPath()
-                media.addOption(":sout=#rtp{sdp=rtsp://0.0.0.0:$rtspPort$streamPath}")
-                media.addOption(":sout-keep")
-                media.addOption(":network-caching=1000")
-                mediaPlayer?.media = media
-                mediaPlayer?.play()
-
+                initializeVlcPipeline()
                 Log.i(TAG, "Reconnect attempt $reconnectAttempts started")
             } catch (e: Exception) {
                 Log.e(TAG, "Error during reconnect attempt $reconnectAttempts", e)
@@ -403,12 +360,19 @@ class RtspServerService : LifecycleService() {
         bandwidthSampleIndex = 0
         bandwidthSampleCount = 0
         notificationTickCount = 0
+        cachedLocalIp = getLocalIpAddress()
+        ipRefreshTickCount = 0
 
         uptimeJob = lifecycleScope.launch {
             while (true) {
                 delay(1000)
                 if (isStreaming) {
                     updateBandwidth()
+                    ipRefreshTickCount++
+                    if (ipRefreshTickCount >= IP_REFRESH_INTERVAL) {
+                        ipRefreshTickCount = 0
+                        cachedLocalIp = getLocalIpAddress()
+                    }
                     broadcastStatus()
                     notificationTickCount++
                     if (notificationTickCount >= NOTIFICATION_UPDATE_INTERVAL) {
@@ -481,7 +445,7 @@ class RtspServerService : LifecycleService() {
             0L
         }
 
-        val localIp = getLocalIpAddress()
+        val localIp = cachedLocalIp
         val streamUrl = if (localIp != null && isStreaming) {
             "rtsp://$localIp:$rtspPort${getStreamPath()}"
         } else {

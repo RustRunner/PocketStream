@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-        private const val STREAM_CONNECTION_TIMEOUT_MS = 30000L // 30 seconds for UDP stream
         const val EXTRA_STREAM_URL = "extra_stream_url"
         private const val KEY_DETECTED_IP = "detected_ip"
         private const val KEY_PHONE_IP = "phone_ip"
@@ -631,11 +630,7 @@ class MainActivity : AppCompatActivity() {
             putExtra(RtspServerService.EXTRA_TOKEN, token)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
+        startForegroundService(intent)
     }
 
     /**

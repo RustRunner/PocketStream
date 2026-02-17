@@ -52,7 +52,6 @@ class FullscreenVideoActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "FullscreenVideoActivity"
-        private const val STREAM_CONNECTION_TIMEOUT_MS = 30000L // 30 seconds for UDP stream
         private const val STALE_THRESHOLD_MS = 3000L
         private const val HEALTH_CHECK_INTERVAL_MS = 500L
         private const val RTSP_RECONNECT_DELAY_MS = 2000L
@@ -129,11 +128,6 @@ class FullscreenVideoActivity : AppCompatActivity() {
      * PixelCopy is required for SurfaceView content capture.
      */
     private fun takeScreenshot() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            Toast.makeText(this, "Screenshot requires Android 7.0 or higher", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         try {
             val surfaceView = binding.fullscreenPlayerView
 
@@ -304,7 +298,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
 
             // Generate filename with timestamp
             val timestamp = TimeUtils.generateTimestamp()
-            val filename = "TVS_Recording_$timestamp.mp4"
+            val filename = "PS_Recording_$timestamp.mp4"
             recordingFile = File(cacheDir, filename)
 
             val outputPath = recordingFile!!.absolutePath
@@ -777,10 +771,12 @@ class FullscreenVideoActivity : AppCompatActivity() {
 
                     // If surface already exists, attach immediately
                     if (binding.fullscreenPlayerView.holder.surface.isValid) {
-                        Log.d(TAG, "Fullscreen surface already valid, attaching LibVLC output now")
                         val vout: IVLCVout = vlcVout
-                        vout.setVideoView(binding.fullscreenPlayerView)
-                        vout.attachViews()
+                        if (!vout.areViewsAttached()) {
+                            Log.d(TAG, "Fullscreen surface already valid, attaching LibVLC output now")
+                            vout.setVideoView(binding.fullscreenPlayerView)
+                            vout.attachViews()
+                        }
                     }
 
                     // Create media and start playback
