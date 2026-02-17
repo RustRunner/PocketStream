@@ -55,6 +55,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
         private const val STREAM_CONNECTION_TIMEOUT_MS = 30000L // 30 seconds for UDP stream
         private const val STALE_THRESHOLD_MS = 3000L
         private const val HEALTH_CHECK_INTERVAL_MS = 500L
+        private const val RTSP_RECONNECT_DELAY_MS = 2000L
     }
 
     private lateinit var binding: ActivityFullscreenVideoBinding
@@ -73,6 +74,9 @@ class FullscreenVideoActivity : AppCompatActivity() {
     private var healthCheckJob: Job? = null
     private var lastReadBytes: Long = 0
     private var staleSinceTimestamp: Long = 0
+
+    // RTSP reconnection
+    private var hasAttemptedReconnect = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -628,16 +632,23 @@ class FullscreenVideoActivity : AppCompatActivity() {
     private fun initializePlayer() {
         Log.d(TAG, "Initializing fullscreen LibVLC player for: $streamUrl")
 
+        val isRtspInput = streamUrl?.startsWith("rtsp://") == true
+
         lifecycleScope.launch {
             try {
                 binding.loadingText.text = "Connecting to stream..."
                 binding.loadingText.visibility = View.VISIBLE
 
-                // Initialize LibVLC
+                // Initialize LibVLC with options conditional on input protocol
                 val options = ArrayList<String>().apply {
                     add("--network-caching=1000")
                     add("--live-caching=500")
-                    add("--udp-timeout=10000")
+                    if (isRtspInput) {
+                        add("--rtsp-tcp")
+                        add("--rtsp-timeout=10")
+                    } else {
+                        add("--udp-timeout=10000")
+                    }
                     if (BuildConfig.DEBUG) {
                         add("-vvv")
                     }
@@ -677,6 +688,7 @@ class FullscreenVideoActivity : AppCompatActivity() {
                             MediaPlayer.Event.Playing -> {
                                 runOnUiThread {
                                     binding.loadingText.visibility = View.GONE
+                                    hasAttemptedReconnect = false
                                     startStreamHealthMonitor()
                                     Log.i(TAG, "LibVLC: Fullscreen stream ready")
                                 }
@@ -692,17 +704,44 @@ class FullscreenVideoActivity : AppCompatActivity() {
                             MediaPlayer.Event.EncounteredError -> {
                                 runOnUiThread {
                                     Log.e(TAG, "LibVLC: Encountered error")
-                                    binding.loadingText.visibility = View.VISIBLE
-                                    binding.loadingText.text = "Stream error"
                                     stopStreamHealthMonitor()
-                                    binding.staleIndicator.text = "STALE"
-                                    binding.staleIndicator.visibility = View.VISIBLE
 
-                                    Toast.makeText(
-                                        this@FullscreenVideoActivity,
-                                        "Stream error occurred",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    if (isRtspInput && !hasAttemptedReconnect) {
+                                        hasAttemptedReconnect = true
+                                        binding.loadingText.visibility = View.VISIBLE
+                                        binding.loadingText.text = "Reconnecting..."
+                                        Log.i(TAG, "RTSP error - attempting reconnect in ${RTSP_RECONNECT_DELAY_MS}ms")
+
+                                        lifecycleScope.launch {
+                                            delay(RTSP_RECONNECT_DELAY_MS)
+                                            try {
+                                                mediaPlayer?.stop()
+                                                val media = Media(libVLC, Uri.parse(streamUrl!!))
+                                                media.addOption(":network-caching=1000")
+                                                media.addOption(":live-caching=500")
+                                                mediaPlayer?.media = media
+                                                media.release()
+                                                mediaPlayer?.play()
+                                                Log.i(TAG, "RTSP reconnect attempt started")
+                                            } catch (e: Exception) {
+                                                Log.e(TAG, "RTSP reconnect failed", e)
+                                                binding.loadingText.text = "Stream error"
+                                                binding.staleIndicator.text = "STALE"
+                                                binding.staleIndicator.visibility = View.VISIBLE
+                                            }
+                                        }
+                                    } else {
+                                        binding.loadingText.visibility = View.VISIBLE
+                                        binding.loadingText.text = "Stream error"
+                                        binding.staleIndicator.text = "STALE"
+                                        binding.staleIndicator.visibility = View.VISIBLE
+
+                                        Toast.makeText(
+                                            this@FullscreenVideoActivity,
+                                            "Stream error occurred",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
                                 }
                             }
                             MediaPlayer.Event.Vout -> {

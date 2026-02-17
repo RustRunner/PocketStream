@@ -50,9 +50,13 @@ class RtspServerService : LifecycleService() {
         const val ACTION_STOP = "com.pocketstream.app.action.STOP_RTSP_SERVER"
 
         // Intent extras
-        const val EXTRA_UDP_PORT = "udp_port"
+        const val EXTRA_INPUT_URL = "input_url"
         const val EXTRA_RTSP_PORT = "rtsp_port"
         const val EXTRA_TOKEN = "token"
+
+        // Reconnection constants
+        private const val MAX_RECONNECT_ATTEMPTS = 5
+        private const val RECONNECT_DELAY_MS = 3000L
     }
 
     private var libVLC: LibVLC? = null
@@ -61,8 +65,13 @@ class RtspServerService : LifecycleService() {
     private var startTime: Long = 0
     private var uptimeJob: Job? = null
     private var rtspPort: Int = 8554
-    private var udpPort: Int = 8600
+    private var inputUrl: String = "udp://@:8600"
     private var streamToken: String = ""
+
+    // Reconnection state
+    private var reconnectAttempts: Int = 0
+    private var reconnectJob: Job? = null
+
 
     // Bandwidth tracking
     private var lastBytesRead: Long = 0
@@ -97,9 +106,10 @@ class RtspServerService : LifecycleService() {
         super.onStartCommand(intent, flags, startId)
         when (intent?.action) {
             ACTION_START -> {
-                udpPort = intent.getIntExtra(EXTRA_UDP_PORT, 8600)
+                inputUrl = intent.getStringExtra(EXTRA_INPUT_URL) ?: "udp://@:8600"
                 rtspPort = intent.getIntExtra(EXTRA_RTSP_PORT, 8554)
                 streamToken = intent.getStringExtra(EXTRA_TOKEN) ?: ""
+                reconnectAttempts = 0
                 startRtspServer()
             }
             ACTION_STOP -> {
@@ -178,17 +188,23 @@ class RtspServerService : LifecycleService() {
         }
 
         try {
-            Log.d(TAG, "Starting RTSP server: UDP port $udpPort -> RTSP port $rtspPort")
+            val isRtspInput = inputUrl.startsWith("rtsp://")
+            Log.d(TAG, "Starting RTSP server: input=$inputUrl -> RTSP port $rtspPort")
             // Start foreground service with notification
             startForeground(NOTIFICATION_ID, createNotification())
 
-            // Initialize LibVLC with RTSP authentication options
+            // Initialize LibVLC with options conditional on input protocol
             val options = ArrayList<String>().apply {
                 add("--network-caching=1000")
                 add("--live-caching=500")
-                add("--udp-timeout=10000")
-                // Increase RTSP session timeout (default is 60 seconds)
-                add("--rtsp-timeout=0")  // 0 = no timeout
+                if (isRtspInput) {
+                    add("--rtsp-tcp")
+                    add("--rtsp-timeout=10")
+                } else {
+                    add("--udp-timeout=10000")
+                }
+                // Increase output RTSP session timeout (default is 60 seconds)
+                add("--rtsp-timeout=0")  // 0 = no timeout for output
                 if (BuildConfig.DEBUG) {
                     add("-vvv")
                 }
@@ -201,10 +217,14 @@ class RtspServerService : LifecycleService() {
                     when (event.type) {
                         MediaPlayer.Event.Playing -> {
                             Log.i(TAG, "RTSP server: Playing/Streaming")
+                            reconnectAttempts = 0
                         }
                         MediaPlayer.Event.EncounteredError -> {
                             Log.e(TAG, "RTSP server: Error encountered")
                             broadcastStatus(error = "Stream error occurred")
+                            if (isRtspInput) {
+                                scheduleReconnect()
+                            }
                         }
                         MediaPlayer.Event.Stopped -> {
                             Log.d(TAG, "RTSP server: Stopped")
@@ -214,8 +234,7 @@ class RtspServerService : LifecycleService() {
             }
 
             // Create media with sout for RTSP streaming
-            val udpUrl = "udp://@:$udpPort"
-            val media = Media(libVLC, Uri.parse(udpUrl))
+            val media = Media(libVLC, Uri.parse(inputUrl))
 
             // Sout option: receive UDP and serve via RTSP
             // Explicitly bind to 0.0.0.0 to allow remote access (WiFi, Tailscale, etc.)
@@ -228,7 +247,9 @@ class RtspServerService : LifecycleService() {
             media.addOption(":network-caching=1000")
 
             mediaPlayer?.media = media
-            media.release()
+            // Note: do NOT call media.release() here — MediaPlayer needs the
+            // live Media reference so that mediaPlayer.media.stats remains
+            // accessible for bandwidth tracking.
 
             // Start playback (which starts the RTSP server)
             mediaPlayer?.play()
@@ -262,6 +283,10 @@ class RtspServerService : LifecycleService() {
         try {
             Log.d(TAG, "Stopping RTSP server")
 
+            // Cancel any pending reconnect
+            reconnectJob?.cancel()
+            reconnectJob = null
+
             // Stop timer
             stopUptimeTimer()
 
@@ -278,6 +303,75 @@ class RtspServerService : LifecycleService() {
 
         } catch (e: Exception) {
             Log.e(TAG, "Error stopping RTSP server", e)
+        }
+    }
+
+    private fun scheduleReconnect() {
+        if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+            Log.w(TAG, "Max reconnect attempts ($MAX_RECONNECT_ATTEMPTS) reached, giving up")
+            broadcastStatus(error = "Connection lost after $MAX_RECONNECT_ATTEMPTS retries")
+            return
+        }
+
+        reconnectJob?.cancel()
+        reconnectJob = lifecycleScope.launch {
+            reconnectAttempts++
+            Log.i(TAG, "Scheduling reconnect attempt $reconnectAttempts/$MAX_RECONNECT_ATTEMPTS in ${RECONNECT_DELAY_MS}ms")
+            broadcastStatus(error = "Reconnecting ($reconnectAttempts/$MAX_RECONNECT_ATTEMPTS)...")
+            delay(RECONNECT_DELAY_MS)
+
+            try {
+                releaseResources()
+                // Re-initialize and restart
+                val isRtspInput = inputUrl.startsWith("rtsp://")
+                val options = ArrayList<String>().apply {
+                    add("--network-caching=1000")
+                    add("--live-caching=500")
+                    if (isRtspInput) {
+                        add("--rtsp-tcp")
+                        add("--rtsp-timeout=10")
+                    } else {
+                        add("--udp-timeout=10000")
+                    }
+                    add("--rtsp-timeout=0")
+                    if (BuildConfig.DEBUG) {
+                        add("-vvv")
+                    }
+                }
+                libVLC = LibVLC(this@RtspServerService, options)
+
+                mediaPlayer = MediaPlayer(libVLC).apply {
+                    setEventListener { event ->
+                        when (event.type) {
+                            MediaPlayer.Event.Playing -> {
+                                Log.i(TAG, "RTSP server: Reconnected successfully")
+                                reconnectAttempts = 0
+                            }
+                            MediaPlayer.Event.EncounteredError -> {
+                                Log.e(TAG, "RTSP server: Error on reconnect attempt")
+                                broadcastStatus(error = "Reconnect failed")
+                                scheduleReconnect()
+                            }
+                            MediaPlayer.Event.Stopped -> {
+                                Log.d(TAG, "RTSP server: Stopped")
+                            }
+                        }
+                    }
+                }
+
+                val media = Media(libVLC, Uri.parse(inputUrl))
+                val streamPath = getStreamPath()
+                media.addOption(":sout=#rtp{sdp=rtsp://0.0.0.0:$rtspPort$streamPath}")
+                media.addOption(":sout-keep")
+                media.addOption(":network-caching=1000")
+                mediaPlayer?.media = media
+                mediaPlayer?.play()
+
+                Log.i(TAG, "Reconnect attempt $reconnectAttempts started")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error during reconnect attempt $reconnectAttempts", e)
+                scheduleReconnect()
+            }
         }
     }
 
@@ -334,14 +428,25 @@ class RtspServerService : LifecycleService() {
      */
     private fun updateBandwidth() {
         try {
-            val stats = mediaPlayer?.media?.stats
+            val media = mediaPlayer?.media
+            val stats = media?.stats
             if (stats != null) {
                 val currentBytes = stats.readBytes.toLong()
+                val sentBytes = stats.sentBytes.toLong()
+                val demuxBytes = stats.demuxReadBytes.toLong()
                 val currentTime = System.currentTimeMillis()
                 val timeDelta = currentTime - lastBytesTime
 
-                if (timeDelta > 0 && lastBytesRead > 0) {
-                    val bytesDelta = currentBytes - lastBytesRead
+                // Use the best available byte counter: readBytes, demuxReadBytes, or sentBytes
+                val bestBytes = when {
+                    currentBytes > 0 -> currentBytes
+                    demuxBytes > 0 -> demuxBytes
+                    sentBytes > 0 -> sentBytes
+                    else -> 0L
+                }
+
+                if (timeDelta > 0 && lastBytesRead > 0 && bestBytes > 0) {
+                    val bytesDelta = bestBytes - lastBytesRead
                     if (bytesDelta >= 0) {
                         val instantaneous = (bytesDelta * 1000) / timeDelta
                         bandwidthSamples[bandwidthSampleIndex] = instantaneous
@@ -353,8 +458,11 @@ class RtspServerService : LifecycleService() {
                     }
                 }
 
-                lastBytesRead = currentBytes
+                lastBytesRead = bestBytes
                 lastBytesTime = currentTime
+
+            } else {
+                Log.d(TAG, "Stats unavailable: media=${media != null}")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error getting media stats", e)

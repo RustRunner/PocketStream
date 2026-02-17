@@ -77,7 +77,6 @@ class MainActivity : AppCompatActivity() {
                 val streamUrl = intent.getStringExtra(RtspServerService.EXTRA_STREAM_URL)
                 val errorMessage = intent.getStringExtra(RtspServerService.EXTRA_ERROR_MESSAGE)
                 val bandwidthBytesPerSec = intent.getLongExtra(RtspServerService.EXTRA_BANDWIDTH_BYTES_PER_SEC, 0)
-
                 updateRtspUI(isStreaming, uptimeSeconds, streamUrl, errorMessage, bandwidthBytesPerSec)
             }
         }
@@ -176,11 +175,8 @@ class MainActivity : AppCompatActivity() {
             binding.scanResultText.setTextColor(getColor(R.color.success))
             Log.d(TAG, "onResume: Launch Browser enabled (IP: $detectedIpAddress)")
         }
-        if (phoneIpAddress != null) {
-            binding.launchStreamButton.isEnabled = true
-            binding.videoStreamUrl.text = phoneIpAddress
-            Log.d(TAG, "onResume: Launch Stream enabled (IP: $phoneIpAddress)")
-        }
+        // Re-evaluate stream button based on protocol
+        updateVideoStreamUrl()
 
         // Update RTSP card state to restore button states
         updateRtspCardState()
@@ -258,7 +254,7 @@ class MainActivity : AppCompatActivity() {
             binding.scanResultText.text = getString(R.string.connect_idle)
             binding.scanResultText.setTextColor(getColor(R.color.text_secondary))
             binding.scanProgressBar.visibility = View.GONE
-            binding.browserStatus.text = getString(R.string.browser_stopped)
+
 
             // Update RTSP server card state (will disable since no connection)
             updateRtspCardState()
@@ -414,7 +410,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.d(TAG, "Launching browser to http://$detectedIpAddress")
-        binding.browserStatus.text = getString(R.string.browser_starting)
+
 
         // Create intent to open URL in browser - force HTTP for local device
         val url = "http://$detectedIpAddress"
@@ -427,7 +423,7 @@ class MainActivity : AppCompatActivity() {
 
         try {
             startActivity(intent)
-            binding.browserStatus.text = getString(R.string.browser_streaming)
+
             Log.i(TAG, "Browser launched successfully to $url")
             Toast.makeText(
                 this,
@@ -436,7 +432,7 @@ class MainActivity : AppCompatActivity() {
             ).show()
         } catch (e: Exception) {
             Log.e(TAG, "Error launching browser", e)
-            binding.browserStatus.text = getString(R.string.browser_error)
+
             showErrorDialog("Browser Error", "Cannot open browser: ${e.message}")
         }
     }
@@ -482,15 +478,31 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Updates the video stream URL display when IP changes.
-     * Shows full IP:port format using port from settings.
+     * Shows camera RTSP URL (without credentials) for RTSP mode, or phone IP for UDP mode.
      */
     private fun updateVideoStreamUrl() {
-        if (phoneIpAddress != null) {
-            binding.videoStreamUrl.text = phoneIpAddress
-            binding.launchStreamButton.isEnabled = true
+        val isRtsp = preferencesManager.getInputProtocol() == PreferencesManager.InputProtocol.RTSP
+
+        if (isRtsp) {
+            binding.videoStreamDescription.text = getString(R.string.video_stream_description_rtsp)
+            binding.phoneIpLabel.text = getString(R.string.stream_url_label_rtsp)
+            if (detectedIpAddress != null) {
+                binding.videoStreamUrl.text = preferencesManager.buildCameraRtspDisplayUrl(detectedIpAddress!!)
+                binding.launchStreamButton.isEnabled = true
+            } else {
+                binding.videoStreamUrl.text = getString(R.string.stream_ip_not_detected)
+                binding.launchStreamButton.isEnabled = false
+            }
         } else {
-            binding.videoStreamUrl.text = getString(R.string.stream_ip_not_detected)
-            binding.launchStreamButton.isEnabled = false
+            binding.videoStreamDescription.text = getString(R.string.video_stream_description)
+            binding.phoneIpLabel.text = getString(R.string.stream_url_label_udp)
+            if (phoneIpAddress != null) {
+                binding.videoStreamUrl.text = phoneIpAddress
+                binding.launchStreamButton.isEnabled = true
+            } else {
+                binding.videoStreamUrl.text = getString(R.string.stream_ip_not_detected)
+                binding.launchStreamButton.isEnabled = false
+            }
         }
     }
 
@@ -597,17 +609,24 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Starts the RTSP server foreground service.
+     * Passes the full input URL (RTSP or UDP) based on selected protocol.
      */
     private fun startRtspServerService() {
-        val udpPort = currentStreamPort
+        val isRtsp = preferencesManager.getInputProtocol() == PreferencesManager.InputProtocol.RTSP
+        val inputUrl = if (isRtsp && detectedIpAddress != null) {
+            preferencesManager.buildCameraRtspUrl(detectedIpAddress!!)
+        } else {
+            "udp://@:$currentStreamPort"
+        }
+
         val rtspPort = preferencesManager.getRtspPort()
         val token = preferencesManager.getRtspToken()
 
-        Log.d(TAG, "Starting RtspServerService: UDP=$udpPort, RTSP=$rtspPort, token=${if (token.isNotBlank()) "enabled" else "disabled"}")
+        Log.d(TAG, "Starting RtspServerService: input=$inputUrl, RTSP=$rtspPort, token=${if (token.isNotBlank()) "enabled" else "disabled"}")
 
         val intent = Intent(this, RtspServerService::class.java).apply {
             action = RtspServerService.ACTION_START
-            putExtra(RtspServerService.EXTRA_UDP_PORT, udpPort)
+            putExtra(RtspServerService.EXTRA_INPUT_URL, inputUrl)
             putExtra(RtspServerService.EXTRA_RTSP_PORT, rtspPort)
             putExtra(RtspServerService.EXTRA_TOKEN, token)
         }
@@ -734,15 +753,25 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Launches fullscreen video activity directly.
+     * Builds URL based on selected input protocol (RTSP or UDP).
      */
     private fun launchFullscreenVideo() {
-        if (phoneIpAddress == null) {
-            Toast.makeText(this, getString(R.string.error_scan_first), Toast.LENGTH_SHORT).show()
-            return
+        val isRtsp = preferencesManager.getInputProtocol() == PreferencesManager.InputProtocol.RTSP
+
+        val streamUrl = if (isRtsp) {
+            if (detectedIpAddress == null) {
+                Toast.makeText(this, getString(R.string.error_scan_first), Toast.LENGTH_SHORT).show()
+                return
+            }
+            preferencesManager.buildCameraRtspUrl(detectedIpAddress!!)
+        } else {
+            if (phoneIpAddress == null) {
+                Toast.makeText(this, getString(R.string.error_scan_first), Toast.LENGTH_SHORT).show()
+                return
+            }
+            "udp://@:$currentStreamPort"
         }
 
-        // Pass UDP stream URL to fullscreen activity
-        val streamUrl = "udp://@:$currentStreamPort"
         val intent = Intent(this, FullscreenVideoActivity::class.java).apply {
             putExtra(EXTRA_STREAM_URL, streamUrl)
         }
@@ -777,41 +806,168 @@ class MainActivity : AppCompatActivity() {
     private fun setupSettingsDrawer() {
         val navDrawer = binding.navDrawer.root
 
-        // Get references to settings controls
+        // Setup tabs (Settings | About)
+        val tabSettings = navDrawer.findViewById<TextView>(R.id.tabSettings)
+        val tabAbout = navDrawer.findViewById<TextView>(R.id.tabAbout)
+        val settingsScrollView = navDrawer.findViewById<ScrollView>(R.id.settingsScrollView)
+        val aboutScrollView = navDrawer.findViewById<ScrollView>(R.id.aboutScrollView)
+        val tabIndicator = navDrawer.findViewById<View>(R.id.tabIndicator)
+
+        fun selectTab(isSettings: Boolean) {
+            settingsScrollView.visibility = if (isSettings) View.VISIBLE else View.GONE
+            aboutScrollView.visibility = if (isSettings) View.GONE else View.VISIBLE
+            tabSettings.setTextColor(getColor(if (isSettings) R.color.text_primary else R.color.text_tertiary))
+            tabAbout.setTextColor(getColor(if (isSettings) R.color.text_tertiary else R.color.text_primary))
+            // Animate indicator to left or right half
+            tabIndicator.post {
+                val parentWidth = (tabIndicator.parent as View).width
+                val halfWidth = parentWidth / 2
+                val params = tabIndicator.layoutParams
+                params.width = halfWidth
+                tabIndicator.layoutParams = params
+                tabIndicator.translationX = if (isSettings) 0f else halfWidth.toFloat()
+            }
+        }
+
+        tabSettings.setOnClickListener { selectTab(true) }
+        tabAbout.setOnClickListener { selectTab(false) }
+        // Initialize to Settings tab
+        selectTab(true)
+
+        // Get references to camera input controls
+        val btnProtocolRtsp = navDrawer.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnProtocolRtsp)
+        val btnProtocolUdp = navDrawer.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnProtocolUdp)
+        val rtspInputSection = navDrawer.findViewById<LinearLayout>(R.id.rtspInputSection)
+        val udpInputSection = navDrawer.findViewById<LinearLayout>(R.id.udpInputSection)
+        val cameraRtspPortInput = navDrawer.findViewById<TextInputEditText>(R.id.cameraRtspPortInput)
+        val cameraRtspPathInput = navDrawer.findViewById<TextInputEditText>(R.id.cameraRtspPathInput)
+        val cameraUsernameInput = navDrawer.findViewById<TextInputEditText>(R.id.cameraUsernameInput)
+        val cameraPasswordInput = navDrawer.findViewById<TextInputEditText>(R.id.cameraPasswordInput)
         val streamPortInput = navDrawer.findViewById<TextInputEditText>(R.id.streamPortInput)
+
+        // Get references to RTSP server (output) controls
         val rtspEnableSwitch = navDrawer.findViewById<SwitchMaterial>(R.id.rtspEnableSwitch)
         val rtspPortInput = navDrawer.findViewById<TextInputEditText>(R.id.rtspPortInput)
         val rtspTokenValue = navDrawer.findViewById<TextView>(R.id.rtspTokenValue)
         val regenerateTokenButton = navDrawer.findViewById<com.google.android.material.button.MaterialButton>(R.id.regenerateTokenButton)
 
+        // Highlight the active protocol button, dim the other
+        val accentFill = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#2600E676"))
+        val clearFill = android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT)
+
+        fun selectProtocol(isRtsp: Boolean) {
+            if (isRtsp) {
+                btnProtocolRtsp.setTextColor(getColor(R.color.accent))
+                btnProtocolRtsp.strokeColor = android.content.res.ColorStateList.valueOf(getColor(R.color.accent))
+                btnProtocolRtsp.backgroundTintList = accentFill
+                btnProtocolUdp.setTextColor(getColor(R.color.text_tertiary))
+                btnProtocolUdp.strokeColor = android.content.res.ColorStateList.valueOf(getColor(R.color.text_tertiary))
+                btnProtocolUdp.backgroundTintList = clearFill
+            } else {
+                btnProtocolUdp.setTextColor(getColor(R.color.accent))
+                btnProtocolUdp.strokeColor = android.content.res.ColorStateList.valueOf(getColor(R.color.accent))
+                btnProtocolUdp.backgroundTintList = accentFill
+                btnProtocolRtsp.setTextColor(getColor(R.color.text_tertiary))
+                btnProtocolRtsp.strokeColor = android.content.res.ColorStateList.valueOf(getColor(R.color.text_tertiary))
+                btnProtocolRtsp.backgroundTintList = clearFill
+            }
+            rtspInputSection.visibility = if (isRtsp) View.VISIBLE else View.GONE
+            udpInputSection.visibility = if (isRtsp) View.GONE else View.VISIBLE
+        }
+
         // Load current settings
+        val isRtspProtocol = preferencesManager.getInputProtocol() == PreferencesManager.InputProtocol.RTSP
+        selectProtocol(isRtspProtocol)
+
+        cameraRtspPortInput.setText(preferencesManager.getCameraRtspPort().toString())
+        cameraRtspPathInput.setText(preferencesManager.getCameraRtspPath())
+        cameraUsernameInput.setText(preferencesManager.getCameraUsername())
+        cameraPasswordInput.setText(preferencesManager.getCameraPassword())
         streamPortInput.setText(preferencesManager.getStreamPort().toString())
+
         rtspEnableSwitch.isChecked = preferencesManager.isRtspEnabled()
         rtspPortInput.setText(preferencesManager.getRtspPort().toString())
-        rtspTokenValue.text = "Current Token: ${preferencesManager.getRtspToken()}"
+        rtspTokenValue.text = "Stream Token: ${preferencesManager.getRtspToken()}"
 
-        // Set up stream port change listener
-        streamPortInput.addTextChangedListener(object : TextWatcher {
+        // Protocol button listeners
+        btnProtocolRtsp.setOnClickListener {
+            preferencesManager.setInputProtocol(PreferencesManager.InputProtocol.RTSP)
+            selectProtocol(true)
+            Log.d(TAG, "Input protocol set to: RTSP")
+            updateVideoStreamUrl()
+        }
+
+        btnProtocolUdp.setOnClickListener {
+            preferencesManager.setInputProtocol(PreferencesManager.InputProtocol.UDP)
+            selectProtocol(false)
+            Log.d(TAG, "Input protocol set to: UDP")
+            updateVideoStreamUrl()
+        }
+
+        // Camera RTSP port listener
+        cameraRtspPortInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                val portText = s?.toString() ?: ""
-                val port = portText.toIntOrNull()
+                val port = s?.toString()?.toIntOrNull()
                 if (port != null && port in 1..65535) {
-                    currentStreamPort = port
-                    preferencesManager.saveStreamPort(port)
-                    Log.d(TAG, "Stream port saved: $port")
-                    // Update the video stream URL display
+                    preferencesManager.saveCameraRtspPort(port)
+                    Log.d(TAG, "Camera RTSP port saved: $port")
                     updateVideoStreamUrl()
                 }
             }
         })
 
-        // Set up RTSP server change listeners
+        // Camera RTSP path listener
+        cameraRtspPathInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val path = s?.toString() ?: ""
+                if (path.isNotBlank()) {
+                    preferencesManager.saveCameraRtspPath(path)
+                    Log.d(TAG, "Camera RTSP path saved: $path")
+                    updateVideoStreamUrl()
+                }
+            }
+        })
+
+        // Camera credentials listeners
+        cameraUsernameInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                preferencesManager.saveCameraUsername(s?.toString() ?: "")
+            }
+        })
+
+        cameraPasswordInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                preferencesManager.saveCameraPassword(s?.toString() ?: "")
+            }
+        })
+
+        // UDP stream port listener
+        streamPortInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val port = s?.toString()?.toIntOrNull()
+                if (port != null && port in 1..65535) {
+                    currentStreamPort = port
+                    preferencesManager.saveStreamPort(port)
+                    Log.d(TAG, "Stream port saved: $port")
+                    updateVideoStreamUrl()
+                }
+            }
+        })
+
+        // Set up RTSP server (output) change listeners
         rtspEnableSwitch.setOnCheckedChangeListener { _, isChecked ->
             preferencesManager.setRtspEnabled(isChecked)
             Log.d(TAG, "RTSP server enabled: $isChecked")
-            // Update the RTSP Server card state when setting changes
             updateRtspCardState()
         }
 
@@ -819,8 +975,7 @@ class MainActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                val portText = s?.toString() ?: ""
-                val port = portText.toIntOrNull()
+                val port = s?.toString()?.toIntOrNull()
                 if (port != null && port in 1..65535) {
                     preferencesManager.saveRtspPort(port)
                     Log.d(TAG, "RTSP port saved: $port")
@@ -830,7 +985,7 @@ class MainActivity : AppCompatActivity() {
 
         regenerateTokenButton.setOnClickListener {
             val newToken = preferencesManager.regenerateRtspToken()
-            rtspTokenValue.text = "Current Token: $newToken"
+            rtspTokenValue.text = "Stream Token: $newToken"
             Toast.makeText(this, getString(R.string.rtsp_token_regenerated), Toast.LENGTH_LONG).show()
             Log.d(TAG, "RTSP token regenerated")
         }

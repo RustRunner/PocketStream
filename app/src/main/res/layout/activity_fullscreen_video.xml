@@ -47,6 +47,7 @@
         app:iconGravity="textStart"
         app:iconPadding="0dp"
         app:iconSize="32dp"
+        app:strokeWidth="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -118,6 +119,7 @@
         android:textSize="12sp"
         android:gravity="center"
         app:backgroundTint="#80000000"
+        app:strokeWidth="0dp"
         app:layout_constraintStart_toStartOf="@id/fullscreenPlayerView"
         app:layout_constraintBottom_toBottomOf="@id/fullscreenPlayerView" />
 
@@ -134,6 +136,7 @@
         android:textSize="12sp"
         android:gravity="center"
         app:backgroundTint="#80000000"
+        app:strokeWidth="0dp"
         app:layout_constraintEnd_toEndOf="@id/fullscreenPlayerView"
         app:layout_constraintBottom_toBottomOf="@id/fullscreenPlayerView" />
 

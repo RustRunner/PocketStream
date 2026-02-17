@@ -3,7 +3,7 @@
 
     <!-- Tethering Section -->
     <string name="tethering_title">ETHERNET TETHERING</string>
-    <string name="tethering_description">Enable in phone settings under Hotspot &amp; Tethering. Refresh if needed.</string>
+    <string name="tethering_description">Enable in phone -> Hotspot &amp; Tethering. Refresh if needed.</string>
     <string name="connection_status">Connection status</string>
     <string name="tethering_connected">Tethering Active</string>
     <string name="tethering_disconnected">Tethering Not Detected - Please check settings</string>
@@ -48,7 +48,10 @@
     <!-- Video Stream Section -->
     <string name="video_stream_title">VIDEO STREAM</string>
     <string name="video_stream_description">Receive UDP video stream on this device</string>
+    <string name="video_stream_description_rtsp">Connect to camera\'s RTSP stream</string>
     <string name="stream_url_label">Receive Stream At (Phone IP):</string>
+    <string name="stream_url_label_rtsp">Source:</string>
+    <string name="stream_url_label_udp">Phone IP:</string>
     <string name="stream_ip_not_detected">Not detected</string>
     <string name="stream_port_hint">8600</string>
     <string name="launch_stream">STREAM</string>
@@ -100,11 +103,26 @@
 
     <!-- Settings Drawer -->
     <string name="settings_title">Settings</string>
+    <string name="about_tab_title">About</string>
     <string name="settings_menu">Open settings</string>
 
-    <!-- UDP Stream Section -->
-    <string name="udp_stream_section_title">UDP Stream</string>
-    <string name="stream_port_label">Stream Port</string>
+    <!-- Camera Input Section -->
+    <string name="camera_input_section_title">Camera Input</string>
+    <string name="input_protocol_rtsp">RTSP</string>
+    <string name="input_protocol_udp">Raw UDP</string>
+    <string name="camera_rtsp_port_label">Port</string>
+    <string name="camera_rtsp_port_hint">554</string>
+    <string name="camera_rtsp_path_label">Path</string>
+    <string name="camera_rtsp_path_hint">/live</string>
+    <string name="camera_username_label">Username</string>
+    <string name="camera_password_label">Password</string>
+    <string name="camera_rtsp_path_common">Common: /live, /Streaming/Channels/101 (Hikvision), /cam/realmonitor?channel=1&amp;subtype=0 (Dahua), /h264Preview_01_main (Reolink)</string>
+    <string name="camera_credentials_info">Most IP cameras require credentials to access RTSP streams. Leave blank if your camera allows anonymous access.</string>
+    <string name="camera_input_udp_info">Camera pushes UDP video to this device on the configured port.</string>
+
+    <!-- UDP Stream Section (legacy label kept) -->
+    <string name="udp_stream_section_title">UDP Fallback</string>
+    <string name="stream_port_label">UDP Stream Port</string>
     <string name="stream_port_default">8600</string>
     <string name="udp_stream_info_text">Configure the port to receive UDP video stream from the camera.</string>
 
@@ -118,7 +136,7 @@
 
     <!-- RTSP Auth Section -->
     <string name="rtsp_auth_section_title">Stream Token</string>
-    <string name="rtsp_token_label">Current Token:</string>
+    <string name="rtsp_token_label">Current:</string>
     <string name="rtsp_regenerate_token">Regenerate Token</string>
     <string name="rtsp_token_regenerated">New token generated. Update your clients with the new URL.</string>
     <string name="rtsp_auth_info_text">The token is included in the RTSP URL for security. Only clients with the exact URL can connect. Regenerate to invalidate old URLs.</string>

@@ -47,6 +47,9 @@
     <color name="card_background">#1B1B1B</color>
     <color name="card_elevated">#2C2C2C</color>
 
+    <!-- Accent Fill (faint) -->
+    <color name="accent_faint">#2600E676</color>
+
     <!-- Transparent Overlays -->
     <color name="overlay_light">#1AFFFFFF</color>
     <color name="overlay_dark">#80000000</color>

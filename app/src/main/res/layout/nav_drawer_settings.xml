@@ -7,22 +7,39 @@
     android:background="@color/surface"
     android:fitsSystemWindows="true">
 
-    <!-- Drawer Header -->
+    <!-- Tab Header (Settings | About) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="46dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:gravity="center_vertical"
         android:background="@color/card_background"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/tabSettings"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:text="@string/settings_title"
             android:textAppearance="@style/TextAppearance.PocketStream.Headline2"
             android:textColor="@color/text_primary" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/text_tertiary" />
+
+        <TextView
+            android:id="@+id/tabAbout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/about_tab_title"
+            android:textAppearance="@style/TextAppearance.PocketStream.Headline2"
+            android:textColor="@color/text_tertiary" />
     </LinearLayout>
 
     <View
@@ -30,34 +47,177 @@
         android:layout_height="1dp"
         android:background="@color/text_tertiary" />
 
-    <!-- Scrollable Content Area -->
+    <!-- Tab indicator bar -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp">
+
+        <View
+            android:id="@+id/tabIndicator"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/accent" />
+    </FrameLayout>
+
+    <!-- Settings Tab Content -->
     <ScrollView
         android:id="@+id/settingsScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <!-- Main Settings Content (non-scrollable by default) -->
+            <!-- Camera Input Section Header -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/camera_input_section_title"
+                android:textAppearance="@style/TextAppearance.PocketStream.Body1"
+                android:textColor="@color/accent"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Protocol selector: two side-by-side buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
 
-                <!-- UDP Stream Section Header -->
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnProtocolRtsp"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/udp_stream_section_title"
-                    android:textAppearance="@style/TextAppearance.PocketStream.Body1"
-                    android:textColor="@color/accent"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginEnd="4dp"
+                    android:text="@string/input_protocol_rtsp"
+                    android:textSize="14sp"
+                    app:strokeColor="@color/accent"
+                    android:textColor="@color/accent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnProtocolUdp"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/input_protocol_udp"
+                    android:textSize="14sp"
+                    app:strokeColor="@color/text_tertiary"
+                    android:textColor="@color/text_tertiary" />
+            </LinearLayout>
+
+            <!-- RTSP Input Sub-section (shown when RTSP selected) -->
+            <LinearLayout
+                android:id="@+id/rtspInputSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <!-- Camera RTSP Port -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cameraRtspPortLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/camera_rtsp_port_label"
+                    app:boxStrokeColor="@color/accent"
+                    app:hintTextColor="@color/text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cameraRtspPortInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="5"
+                        android:textColor="@color/text_primary" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Camera RTSP Path -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cameraRtspPathLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:hint="@string/camera_rtsp_path_label"
+                    app:boxStrokeColor="@color/accent"
+                    app:hintTextColor="@color/text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cameraRtspPathInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:hint="@string/camera_rtsp_path_hint"
+                        android:textColor="@color/text_primary" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Camera Username -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cameraUsernameLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/camera_username_label"
+                    app:boxStrokeColor="@color/accent"
+                    app:hintTextColor="@color/text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cameraUsernameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textColor="@color/text_primary" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Camera Password -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cameraPasswordLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/camera_password_label"
+                    app:boxStrokeColor="@color/accent"
+                    app:endIconMode="password_toggle"
+                    app:hintTextColor="@color/text_secondary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cameraPasswordInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:textColor="@color/text_primary" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/camera_credentials_info"
+                    android:textAppearance="@style/TextAppearance.PocketStream.Caption"
+                    android:textColor="@color/text_tertiary"
+                    android:layout_marginBottom="16dp" />
+            </LinearLayout>
+
+            <!-- UDP Input Sub-section (shown when Raw UDP selected) -->
+            <LinearLayout
+                android:id="@+id/udpInputSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <!-- Stream Port -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -83,219 +243,198 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/udp_stream_info_text"
+                    android:text="@string/camera_input_udp_info"
                     android:textAppearance="@style/TextAppearance.PocketStream.Caption"
                     android:textColor="@color/text_tertiary"
                     android:layout_marginBottom="16dp" />
-
-                <!-- RTSP Server Section Header -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rtsp_section_title"
-                    android:textAppearance="@style/TextAppearance.PocketStream.Body1"
-                    android:textColor="@color/accent"
-                    android:layout_marginBottom="12dp" />
-
-                <!-- RTSP Enable Toggle -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/rtsp_enable_label"
-                            android:textAppearance="@style/TextAppearance.PocketStream.Body1"
-                            android:textColor="@color/text_primary" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/rtsp_enable_description"
-                            android:textAppearance="@style/TextAppearance.PocketStream.Caption"
-                            android:textColor="@color/text_secondary" />
-                    </LinearLayout>
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/rtspEnableSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <!-- RTSP Port -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/rtspPortLayout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:hint="@string/rtsp_port_label"
-                    app:boxStrokeColor="@color/accent"
-                    app:hintTextColor="@color/text_secondary">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/rtspPortInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:maxLength="5"
-                        android:textColor="@color/text_primary" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- RTSP Auth Section Header -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rtsp_auth_section_title"
-                    android:textAppearance="@style/TextAppearance.PocketStream.Body1"
-                    android:textColor="@color/accent"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp" />
-
-                <!-- Current Token Display (inline) -->
-                <TextView
-                    android:id="@+id/rtspTokenValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="monospace"
-                    android:textColor="@color/text_primary"
-                    android:textAppearance="@style/TextAppearance.PocketStream.Caption" />
-
-                <!-- Regenerate Token Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/regenerateTokenButton"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rtsp_regenerate_token"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    app:strokeColor="@color/accent"
-                    android:textColor="@color/accent" />
-
             </LinearLayout>
 
-            <!-- About Section -->
+            <!-- RTSP Server Section Header -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rtsp_section_title"
+                android:textAppearance="@style/TextAppearance.PocketStream.Body1"
+                android:textColor="@color/accent"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- RTSP Enable Toggle -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:minHeight="0dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
 
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/text_tertiary" />
-
-                <!-- About Content -->
                 <LinearLayout
-                    android:id="@+id/aboutContent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rtsp_enable_label"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rtsp_enable_description"
+                        android:textAppearance="@style/TextAppearance.PocketStream.Caption"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/rtspEnableSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- RTSP Port -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/rtspPortLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="@string/rtsp_port_label"
+                app:boxStrokeColor="@color/accent"
+                app:hintTextColor="@color/text_secondary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/rtspPortInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- About Header -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_section_title"
-                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
-                        android:textColor="@color/accent"
-                        android:layout_marginBottom="12dp" />
+            <!-- Stream Token Display -->
+            <TextView
+                android:id="@+id/rtspTokenValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@android:color/white"
+                android:textAppearance="@style/TextAppearance.PocketStream.Body1" />
 
-                    <!-- App Name and Version -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/app_name"
-                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
-                        android:textColor="@color/text_primary"
-                        android:textStyle="bold" />
+            <!-- Regenerate Token Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/regenerateTokenButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rtsp_regenerate_token"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:textAlignment="center"
+                app:strokeColor="@color/accent"
+                android:textColor="@color/accent" />
 
-                    <TextView
-                        android:id="@+id/aboutVersionText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_app_version"
-                        android:textAppearance="@style/TextAppearance.PocketStream.Caption"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginBottom="12dp" />
+        </LinearLayout>
+    </ScrollView>
 
-                    <!-- License -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_license_title"
-                        android:textAppearance="@style/TextAppearance.PocketStream.Caption"
-                        android:textColor="@color/text_tertiary" />
+    <!-- About Tab Content -->
+    <ScrollView
+        android:id="@+id/aboutScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:visibility="gone">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_license_type"
-                        android:textAppearance="@style/TextAppearance.PocketStream.Body1"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginBottom="6dp" />
+        <LinearLayout
+            android:id="@+id/aboutContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-                    <!-- View Licenses Button -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/viewLicensesButton"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="0dp"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        android:text="@string/about_view_licenses"
-                        android:textSize="12sp"
-                        android:textColor="@color/accent"
-                        android:paddingStart="0dp"
-                        android:layout_marginBottom="9dp" />
+            <!-- App Name and Version -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.PocketStream.Body1"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold" />
 
-                    <!-- EULA / Terms -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_eula_title"
-                        android:textAppearance="@style/TextAppearance.PocketStream.Caption"
-                        android:textColor="@color/text_tertiary"
-                        android:layout_marginBottom="4dp" />
+            <TextView
+                android:id="@+id/aboutVersionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_app_version"
+                android:textAppearance="@style/TextAppearance.PocketStream.Caption"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="12dp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_eula_text"
-                        android:textAppearance="@style/TextAppearance.PocketStream.Caption"
-                        android:textColor="@color/text_secondary"
-                        android:lineSpacingMultiplier="1.2"
-                        android:layout_marginBottom="12dp" />
+            <!-- License -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_license_title"
+                android:textAppearance="@style/TextAppearance.PocketStream.Caption"
+                android:textColor="@color/text_tertiary" />
 
-                    <!-- Copyright -->
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/about_copyright"
-                        android:textAppearance="@style/TextAppearance.PocketStream.Caption"
-                        android:textColor="@color/text_tertiary"
-                        android:gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_license_type"
+                android:textAppearance="@style/TextAppearance.PocketStream.Body1"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="6dp" />
 
-                </LinearLayout>
-            </LinearLayout>
+            <!-- View Licenses Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/viewLicensesButton"
+                style="@style/Widget.Material3.Button.TextButton"
+                app:strokeWidth="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:text="@string/about_view_licenses"
+                android:textSize="12sp"
+                android:textColor="@color/accent"
+                android:paddingStart="0dp"
+                android:layout_marginBottom="9dp" />
+
+            <!-- EULA / Terms -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_eula_title"
+                android:textAppearance="@style/TextAppearance.PocketStream.Caption"
+                android:textColor="@color/text_tertiary"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_eula_text"
+                android:textAppearance="@style/TextAppearance.PocketStream.Caption"
+                android:textColor="@color/text_secondary"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Copyright -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_copyright"
+                android:textAppearance="@style/TextAppearance.PocketStream.Caption"
+                android:textColor="@color/text_tertiary"
+                android:gravity="center" />
 
         </LinearLayout>
     </ScrollView>

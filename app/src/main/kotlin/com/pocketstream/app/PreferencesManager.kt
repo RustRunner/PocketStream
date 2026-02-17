@@ -13,16 +13,31 @@ import androidx.security.crypto.MasterKey
  */
 class PreferencesManager(context: Context) {
 
+    enum class InputProtocol {
+        RTSP, UDP
+    }
+
     companion object {
         private const val TAG = "PreferencesManager"
         private const val PREFS_NAME = "pocket_stream_prefs"
         private const val SECURE_PREFS_NAME = "pocket_stream_secure_prefs"
 
-        // Stream input settings
+        // Camera input protocol
+        private const val KEY_INPUT_PROTOCOL = "input_protocol"
+
+        // Stream input settings (UDP)
         private const val KEY_STREAM_PORT = "stream_port"
         private const val DEFAULT_STREAM_PORT = 8600
 
-        // RTSP server settings
+        // Camera RTSP input settings
+        private const val KEY_CAMERA_RTSP_PORT = "camera_rtsp_port"
+        private const val DEFAULT_CAMERA_RTSP_PORT = 554
+        private const val KEY_CAMERA_RTSP_PATH = "camera_rtsp_path"
+        private const val DEFAULT_CAMERA_RTSP_PATH = "/live"
+        private const val KEY_CAMERA_USERNAME = "camera_username"
+        private const val KEY_CAMERA_PASSWORD = "camera_password"
+
+        // RTSP server settings (output re-stream)
         private const val KEY_RTSP_ENABLED = "rtsp_enabled"
         private const val KEY_RTSP_PORT = "rtsp_port"
         private const val KEY_RTSP_TOKEN = "rtsp_token"
@@ -84,7 +99,84 @@ class PreferencesManager(context: Context) {
         securePreferences.edit().clear().apply()
     }
 
-    // ========== RTSP Server Settings ==========
+    // ========== Camera Input Protocol ==========
+
+    fun getInputProtocol(): InputProtocol {
+        val value = sharedPreferences.getString(KEY_INPUT_PROTOCOL, InputProtocol.RTSP.name)
+        return try {
+            InputProtocol.valueOf(value ?: InputProtocol.RTSP.name)
+        } catch (e: IllegalArgumentException) {
+            InputProtocol.RTSP
+        }
+    }
+
+    fun setInputProtocol(protocol: InputProtocol) {
+        sharedPreferences.edit().putString(KEY_INPUT_PROTOCOL, protocol.name).apply()
+    }
+
+    // ========== Camera RTSP Input Settings ==========
+
+    fun getCameraRtspPort(): Int {
+        return sharedPreferences.getInt(KEY_CAMERA_RTSP_PORT, DEFAULT_CAMERA_RTSP_PORT)
+    }
+
+    fun saveCameraRtspPort(port: Int) {
+        sharedPreferences.edit().putInt(KEY_CAMERA_RTSP_PORT, port).apply()
+    }
+
+    fun getCameraRtspPath(): String {
+        return sharedPreferences.getString(KEY_CAMERA_RTSP_PATH, DEFAULT_CAMERA_RTSP_PATH) ?: DEFAULT_CAMERA_RTSP_PATH
+    }
+
+    fun saveCameraRtspPath(path: String) {
+        sharedPreferences.edit().putString(KEY_CAMERA_RTSP_PATH, path).apply()
+    }
+
+    fun getCameraUsername(): String {
+        return securePreferences.getString(KEY_CAMERA_USERNAME, "") ?: ""
+    }
+
+    fun saveCameraUsername(username: String) {
+        securePreferences.edit().putString(KEY_CAMERA_USERNAME, username).apply()
+    }
+
+    fun getCameraPassword(): String {
+        return securePreferences.getString(KEY_CAMERA_PASSWORD, "") ?: ""
+    }
+
+    fun saveCameraPassword(password: String) {
+        securePreferences.edit().putString(KEY_CAMERA_PASSWORD, password).apply()
+    }
+
+    /**
+     * Builds the full RTSP URL for the camera input.
+     * Format: rtsp://[user:pass@]<cameraIp>:<port><path>
+     */
+    fun buildCameraRtspUrl(cameraIp: String): String {
+        val port = getCameraRtspPort()
+        val path = getCameraRtspPath()
+        val username = getCameraUsername()
+        val password = getCameraPassword()
+
+        val userInfo = if (username.isNotBlank() && password.isNotBlank()) {
+            "$username:$password@"
+        } else {
+            ""
+        }
+
+        return "rtsp://$userInfo$cameraIp:$port$path"
+    }
+
+    /**
+     * Builds a display-safe version of the camera RTSP URL (credentials masked).
+     */
+    fun buildCameraRtspDisplayUrl(cameraIp: String): String {
+        val port = getCameraRtspPort()
+        val path = getCameraRtspPath()
+        return "rtsp://$cameraIp:$port$path"
+    }
+
+    // ========== RTSP Server Settings (Output Re-stream) ==========
 
     /**
      * Checks if RTSP server is enabled.

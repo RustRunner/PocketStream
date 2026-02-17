@@ -104,6 +104,7 @@
                         app:icon="@drawable/ic_refresh"
                         app:iconTint="@color/success"
                         app:iconSize="24dp"
+                        app:strokeWidth="0dp"
                         app:iconGravity="textStart"
                         app:iconPadding="0dp"
                         app:layout_constraintBottom_toBottomOf="@id/scanButton"
@@ -114,13 +115,13 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/scanButton"
                         style="@style/Widget.PocketStream.Button"
-                        android:layout_width="125dp"
-                        android:layout_height="70dp"
+                        android:layout_width="112dp"
+                        android:layout_height="63dp"
                         android:enabled="false"
                         android:text="@string/connect_button"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         app:icon="@drawable/ic_link"
-                        app:iconSize="19dp"
+                        app:iconSize="17dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -151,16 +152,12 @@
 
                     <ImageView
                         android:id="@+id/tetheringStatusIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginStart="8dp"
-                        android:contentDescription="@string/connection_status"
-                        android:src="@drawable/ic_check_circle"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@id/tetheringStatus"
                         app:layout_constraintStart_toEndOf="@id/tetheringStatus"
                         app:layout_constraintTop_toTopOf="@id/tetheringStatus"
-                        app:tint="@color/success"
                         tools:visibility="visible" />
 
                     <!-- Connection progress bar (50% width) -->
@@ -229,12 +226,12 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/browserButton"
                         style="@style/Widget.PocketStream.Button"
-                        android:layout_width="125dp"
-                        android:layout_height="70dp"
+                        android:layout_width="112dp"
+                        android:layout_height="63dp"
                         android:text="@string/start_browser"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         app:icon="@drawable/ic_globe"
-                        app:iconSize="19dp"
+                        app:iconSize="17dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -273,16 +270,6 @@
                         app:layout_constraintBaseline_toBaselineOf="@id/targetIpLabel"
                         tools:text="192.168.42.129" />
 
-                    <TextView
-                        android:id="@+id/browserStatus"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/browser_stopped"
-                        android:textAppearance="@style/TextAppearance.PocketStream.Caption"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/targetIpLabel" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -335,12 +322,12 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/launchStreamButton"
                         style="@style/Widget.PocketStream.Button"
-                        android:layout_width="125dp"
-                        android:layout_height="70dp"
+                        android:layout_width="112dp"
+                        android:layout_height="63dp"
                         android:text="@string/launch_stream"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         app:icon="@drawable/ic_broadcast"
-                        app:iconSize="20dp"
+                        app:iconSize="18dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -427,12 +414,12 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/launchRtspButton"
                         style="@style/Widget.PocketStream.Button"
-                        android:layout_width="125dp"
-                        android:layout_height="70dp"
+                        android:layout_width="112dp"
+                        android:layout_height="63dp"
                         android:text="@string/launch_rtsp"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         app:icon="@drawable/ic_broadcast"
-                        app:iconSize="20dp"
+                        app:iconSize="18dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -481,6 +468,7 @@
                             app:icon="@android:drawable/ic_menu_share"
                             app:iconTint="@color/accent"
                             app:iconGravity="textStart"
+                            app:strokeWidth="0dp"
                             app:iconPadding="0dp"
                             app:iconSize="16dp" />
 
