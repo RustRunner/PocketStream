@@ -4,18 +4,21 @@
     <p>UDP/RTSP video streaming for Android</p>             
   </div>
 
-Android app that enables direct ethernet connections to IP cameras. Manages UDP live view, screenshots, recordings, and RTSP re-streaming over WiFi or Cellular — all from the phone.
+PocketStream is a professional-grade Android video utility for direct IP camera monitoring and relay. It transforms your
+  phone into a portable control center, offering low-latency UDP/RTSP playback, high-quality media capture, and a secure,
+  authenticated RTSP re-streaming server for sharing local camera feeds over WiFi or Cellular.
 
 ## Features
 
-- **Ethernet Tethering** — Connects to IP cameras via ethernet tethering with automatic network discovery
-- **Live View** — Real-time UDP video streaming powered by LibVLC with fullscreen landscape mode
-- **Screenshots & Recording** — Capture stills or record video directly from the live stream
-- **Camera Config** — Launch the camera's web interface for settings from within the app
-- **RTSP Re-streaming** — Re-broadcast the camera feed as a token-protected RTSP stream, accessible to other devices over WiFi or cellular
-- **Tailscale VPN Support** — With Tailscale installed, the app automatically detects the VPN IP and tunnels the RTSP stream through it. Any user on the same Tailscale network can paste the RTSP URL (with auth token) into VLC to watch the live stream remotely.
-- **Bandwidth & Uptime Monitoring** — Real-time stats for the RTSP server
-
+- **Direct Ethernet Discovery** — Automates subnet discovery and point-to-point IP detection for Ethernet-tethered cameras, bypassing the need for a local router.
+- **Live View** — Real-time video streaming powered by LibVLC with fullscreen landscape mode.
+- **Screenshots & Recording** — Capture stills or record video directly from the live stream.
+- **Camera Config** — Launch the camera's web interface for settings from within the app.
+- **RTSP Re-streaming** — Re-broadcast the camera feed as a token-protected RTSP stream, accessible to other devices over WiFi or cellular.
+- **Tailscale VPN Support** — With Tailscale installed, the app automatically detects the VPN IP and tunnels the RTSP stream through it, providing an additional layer of security.
+- **Bandwidth & Uptime Monitoring** — Real-time tracking of server uptime and outbound bandwidth (kbps/Mbps), providing instant feedback on stream health and network performance.
+- **Persistent Foreground Operation** — Built as a specialized Android Foreground Service to ensure uninterrupted re-streaming and recording, even when the screen is off or the app is in the background.
+  
 ## Requirements
 
 - Android 8.0+ (API 26)
@@ -48,62 +51,95 @@ Then run:
 ./gradlew assembleRelease
 ```
 
-## Usage
-0. Enable **DHCP** on IP Camera (Camera needs to recieve an IP assigned by the phone)
-1. Use **USB-ethernet adapter** to connect Phone to IP Camera
-2. Enable **Ethernet Tethering** in phone's Hotspot & Tethering settings
-3. Tap **Connect** — the app discovers the camera on the local network
-4. Use **Browser** to access the camera's web config
-5. Copy **Phone IP** to camera's web config as UDP stream destination
-6. Tap **Stream** to start the live video feed
-7. Optionally enable the **RTSP Server** in Settings to re-stream to other devices
-8. For remote viewing: install Tailscale on the phone, and share the RTSP URL with users on your Tailscale network — they can open it directly in VLC
+## Prerequisites
+- **USB-to-Ethernet Adapter:** Required for the physical connection.
+- **IP Camera Setup:** Ensure the camera is set to **DHCP** (so the phone can assign it an IP).
+- **VLC Media Player:** Recommended for remote viewing on other devices.
 
+## General Setup (Common to all modes)
+1. **Connect:** Use the USB-Ethernet adapter to connect your phone to the camera.
+2. **Enable Tethering:** In Android Settings, go to **Network & Internet > Hotspot & Tethering** and toggle **Ethernet Tethering** ON.
+3. **Discover:** Open PocketStream and tap **Scan**. The app will find the camera's IP on the tethered network.
+4. **Configure:** (Optional) Tap **Launch Browser** to access the camera’s internal web interface.
+   
+---
+
+## <img src="https://github.com/user-attachments/assets/8496f45e-fc56-437f-8c12-5d708c0bcb44" height="28" style="vertical-align: middle;" alt="RTSP Icon"> Mode A: RTSP Input (Standard)
+
+*Best for modern cameras (Amcrest, Hikvision, Dahua, etc.)*
+
+1. **Set Credentials:** Open the **Settings Drawer** and enter the camera’s RTSP Port, Path (e.g., `/live/ch0`), and login credentials.
+2. **Start Stream:** Tap **Launch Stream** to pull the video from the camera.
+   
+## <img src="https://github.com/user-attachments/assets/b939923f-f954-452d-969d-fe60e0993f68" height="28" style="vertical-align: middle;" alt="UDP Icon"> Mode B: Raw UDP Input (Legacy/Fallback)
+
+*Best for specialized hardware or cameras that "Push" video.*
+
+1. **Get Phone IP:** Note the **Local IP** displayed in the "Video Stream" section of the app.
+2. **Configure Camera:** In the camera’s web interface, set the **UDP Destination IP** to your phone’s IP and port `8600`.
+3. **Start Stream:** Tap **Launch Stream** to listen for incoming video.
+
+---
+
+## Remote Viewing & Re-streaming
+PocketStream can act as a secure gateway to share your local camera with the world.
+
+1. **Enable Server:** In Settings, toggle **RTSP Server** to ON.
+2. **Security:** A unique **Stream Token** is generated automatically. Use the "Regenerate" button to cycle this token at any time.
+3. **Tailscale VPN:**
+    - Install and sign into **Tailscale** on your phone.
+    - PocketStream will detect your VPN IP automatically.
+    - Share the **RTSP URL** (found in the RTSP Server card) with anyone on your Tailscale network.
+    - They can paste that URL into VLC to watch the live stream remotely.
+
+---
+
+  ## Plug and play
+
+<img width="1524" height="1137" alt="Screenshot from 2026-02-17 23-37-24" src="https://github.com/user-attachments/assets/6c5833ee-c03f-4433-8839-d8171b220cd0" />
 
   ## Screenshots
 
   ### Initial Connection
   <table>
     <tr>
-      <td><img src="https://github.com/user-attachments/assets/0d8896df-0fb9-40b1-a05c-cc59d9966ac8" width="250" /></td>
-      <td><img src="https://github.com/user-attachments/assets/ed30d17f-6a8a-41d5-8e37-f55a0696a129" width="250" /></td>
-      <td><img src="https://github.com/user-attachments/assets/8bf72adc-4578-4c43-b551-fca370ef20a7" width="250" /></td>
+      <td><img src="https://github.com/user-attachments/assets/d00af848-cafd-4c48-8478-1a52484ebf99" width="320" /></td>
+      <td><img src="https://github.com/user-attachments/assets/3e72269d-9ac7-48a4-b016-b10fdd6d9817" width="320" /></td>
+      <td><img src="https://github.com/user-attachments/assets/f694df60-229d-440d-8e11-35a425136273" width="320" /></td>
     </tr>
   </table>
 
   ### Fullscreen Player
   <table>
-    <tr>                                                                                                                                                                      
-      <td><img src="https://github.com/user-attachments/assets/ae6d4e21-383d-4cae-b5c3-94121dbdbd4b" width="400" /></td>
-      <td><img src="https://github.com/user-attachments/assets/14394c40-4404-4d42-a2f5-e2db30e8481e" width="400" /></td>                                                      
-    </tr>                                                                                                                                                                     
+    <tr>    
+      <td><img src="https://github.com/user-attachments/assets/8ff1794f-3b1b-4c20-a3f1-2ba4d064fa4e" width="500" /></td>
+      <td><img src="https://github.com/user-attachments/assets/05fc2f76-1fda-4e43-85a5-ac33644fce55" width="500" /></td>                                                  
     <tr>
-      <td><img src="https://github.com/user-attachments/assets/aa550eb7-0f0c-403f-99d4-9804710ed19d" width="400" /></td>
-      <td><img src="https://github.com/user-attachments/assets/71d4b6f8-232d-4564-863b-889360546680" width="400" /></td>
-    </tr>
+      <td><img src="https://github.com/user-attachments/assets/4426c37d-f102-4fd6-9371-6cc46af01377" width="500" /></td>
+      <td><img src="https://github.com/user-attachments/assets/82a8ac4a-9516-40bf-865a-850cb3a96ffc" width="500" /></td>  
   </table>
 
 ### Re-streaming
   <table>                                                                                                                                                                   
     <tr>                                                                                                                                                                      
-      <td><img src="https://github.com/user-attachments/assets/92ec3d5a-7bba-4913-999b-f832d72cc8a8" width="250" /></td>
-      <td><img src="https://github.com/user-attachments/assets/6f7ed3f8-0180-45c5-91cb-79d116e20b4b" width="250" /></td>                                                      
+      <td><img src="https://github.com/user-attachments/assets/34a4a3d4-096b-4081-bfb8-3cca79ecd8d3" width="320" /></td>
+      <td><img src="https://github.com/user-attachments/assets/1d4adfec-c394-4260-bc37-254aa26dfe94" width="320" /></td>                                                  
     </tr> 
   </table>
-    
+
 ### Receiving in VLC
   <table>    
     <tr>
-      <td><img src="https://github.com/user-attachments/assets/fa127fff-a8c0-46c6-a2b4-292b904327cc" width="250" /></td>
-      <td><img src="https://github.com/user-attachments/assets/d8c809a7-2bad-4543-9ffb-bb911ca5fc9d" width="250" /></td>
+      <td><img src="https://github.com/user-attachments/assets/fa127fff-a8c0-46c6-a2b4-292b904327cc" width="320" /></td>
+      <td><img src="https://github.com/user-attachments/assets/d8c809a7-2bad-4543-9ffb-bb911ca5fc9d" width="320" /></td>
     </tr>
   </table>
   
 ### Receiving in ATAK
   <table>                                                                                                                                                                     
     <tr>                                                                                                                                                                      
-      <td><img src="https://github.com/user-attachments/assets/34d89e12-6f0c-44c4-ad5e-9314781276b2" width="400" /></td>
-      <td><img src="https://github.com/user-attachments/assets/607d292d-f7ce-46d9-bb68-dad769a75252" width="400" /></td>                                                      
+      <td><img src="https://github.com/user-attachments/assets/34d89e12-6f0c-44c4-ad5e-9314781276b2" width="500" /></td>
+      <td><img src="https://github.com/user-attachments/assets/607d292d-f7ce-46d9-bb68-dad769a75252" width="500" /></td>                                                      
     </tr>                                                                                                                                                                     
   </table>
 
