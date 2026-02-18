@@ -19,11 +19,12 @@ PocketStream is a professional-grade Android video utility for direct IP camera 
 - **Bandwidth & Uptime Monitoring** — Real-time tracking of server uptime and outbound bandwidth (kbps/Mbps), providing instant feedback on stream health and network performance.
 - **Persistent Foreground Operation** — Built as a specialized Android Foreground Service to ensure uninterrupted re-streaming and recording, even when the screen is off or the app is in the background.
   
-## Requirements
+## Prerequisites
 
 - Android 8.0+ (API 26)
-- USB-to-Ethernet adapter (or compatible tethering setup)
-- IP camera with UDP stream output
+- **USB-to-Ethernet Adapter:** Required for the physical connection.
+- **IP Camera Setup:** Ensure the camera is set to **DHCP** (so the phone can assign it an IP).
+- **VLC Media Player:** Recommended for remote viewing on other devices.
 - [Tailscale](https://tailscale.com/) (optional, for remote RTSP access over VPN)
 
 ## Build
@@ -50,17 +51,11 @@ Then run:
 ```bash
 ./gradlew assembleRelease
 ```
-
-## Prerequisites
-- **USB-to-Ethernet Adapter:** Required for the physical connection.
-- **IP Camera Setup:** Ensure the camera is set to **DHCP** (so the phone can assign it an IP).
-- **VLC Media Player:** Recommended for remote viewing on other devices.
-
 ## General Setup (Common to all modes)
 1. **Connect:** Use the USB-Ethernet adapter to connect your phone to the camera.
 2. **Enable Tethering:** In Android Settings, go to **Network & Internet > Hotspot & Tethering** and toggle **Ethernet Tethering** ON.
-3. **Discover:** Open PocketStream and tap **Scan**. The app will find the camera's IP on the tethered network.
-4. **Configure:** (Optional) Tap **Launch Browser** to access the camera’s internal web interface.
+3. **Discover:** Open PocketStream and tap **Connect**. The app will find the camera's IP on the tethered network.
+4. **Configure:** (Optional) Tap **Browser** to access the camera’s internal web interface.
    
 ---
 
