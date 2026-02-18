@@ -1,5 +1,5 @@
   <div align="center">                                                                                                                                                        
-    <img src="https://github.com/user-attachments/assets/23005a47-d69c-4d61-b01a-1a88268bfaee" width="128" />
+    <img src="https://github.com/user-attachments/assets/23005a47-d69c-4d61-b01a-1a88268bfaee" width="200" />
     <h1>PocketStream</h1>                                                                                                                                                     
     <p>UDP/RTSP video streaming for Android</p>             
   </div>
