@@ -17,7 +17,6 @@ PocketStream is a professional-grade Android video utility for direct IP camera 
 - **RTSP Re-streaming** — Re-broadcast the camera feed as a token-protected RTSP stream, accessible to other devices over WiFi or cellular.
 - **Tailscale VPN Support** — With Tailscale installed, the app automatically detects the VPN IP and tunnels the RTSP stream through it, providing an additional layer of security.
 - **Bandwidth & Uptime Monitoring** — Real-time tracking of server uptime and outbound bandwidth (kbps/Mbps), providing instant feedback on stream health and network performance.
-- **Persistent Foreground Operation** — Built as a specialized Android Foreground Service to ensure uninterrupted re-streaming and recording, even when the screen is off or the app is in the background.
   
 ## Prerequisites
 
