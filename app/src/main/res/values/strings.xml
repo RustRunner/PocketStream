@@ -4,7 +4,6 @@
     <!-- Tethering Section -->
     <string name="tethering_title">ETHERNET TETHERING</string>
     <string name="tethering_description">Enable in phone -> Hotspot &amp; Tethering. Refresh.</string>
-    <string name="connection_status">Connection status</string>
     <string name="tethering_connected">Tethering Active</string>
     <string name="tethering_disconnected">Tethering Not Detected - Please check settings</string>
     <string name="tethering_error">Tethering unavailable (requires root access)</string>
@@ -18,89 +17,32 @@
     <string name="connect_failed">Connection failed</string>
     <string name="connect_no_devices">No devices found</string>
 
-    <!-- Legacy scan strings (kept for compatibility) -->
-    <string name="ip_scan_title">Network Discovery</string>
-    <string name="ip_scan_description">Scan tethered network for remote device</string>
-    <string name="scan_network">Scan Network</string>
-    <string name="scan_status">Scan status</string>
-    <string name="detected_ip_label">Detected IP:</string>
-    <string name="no_ip_detected">No device detected</string>
-    <string name="scan_idle">Ready to scan</string>
-    <string name="scan_in_progress">Scanning network…</string>
-    <string name="scan_complete">Scan complete</string>
-    <string name="scan_failed">Scan failed</string>
-    <string name="scan_success">Device found</string>
-    <string name="scan_no_devices">No devices found</string>
-
     <!-- Camera Config Section -->
     <string name="browser_title">CAMERA CONFIG</string>
     <string name="browser_description">Log in to system settings browser</string>
     <string name="start_browser">BROWSER</string>
-    <string name="stop_browser">BROWSER</string>
-    <string name="streaming_status">Browser status</string>
     <string name="target_ip_label">Camera IP:</string>
     <string name="no_target_ip">Not configured</string>
-    <string name="browser_stopped"></string>
-    <string name="browser_starting">Opening browser...</string>
-    <string name="browser_streaming"></string>
     <string name="browser_error">Failed to launch browser</string>
 
     <!-- Video Stream Section -->
     <string name="video_stream_title">VIDEO STREAM</string>
     <string name="video_stream_description">Receive UDP video stream on this device</string>
     <string name="video_stream_description_rtsp">Connect to camera\'s RTSP stream</string>
-    <string name="stream_url_label">Receive Stream At (Phone IP):</string>
     <string name="stream_url_label_rtsp">Source:</string>
     <string name="stream_url_label_udp">Phone IP:</string>
     <string name="stream_ip_not_detected">Not detected</string>
-    <string name="stream_port_hint">8600</string>
     <string name="launch_stream">STREAM</string>
-    <string name="stop_stream">STREAM</string>
     <string name="stream_status">Stream status</string>
-    <string name="stream_idle">Not streaming</string>
-    <string name="stream_connecting">Connecting to stream...</string>
-    <string name="stream_buffering">Buffering...</string>
-    <string name="stream_playing">Streaming live</string>
-    <string name="stream_stopped">Stream stopped</string>
-    <string name="stream_error">Stream connection failed</string>
-    <string name="stream_timeout">Stream connection timed out</string>
-    <string name="take_screenshot">Screenshot</string>
-    <string name="start_recording">Record</string>
-    <string name="stop_recording">Stop Recording</string>
-    <string name="fullscreen_hint">Tap video to enter fullscreen</string>
-    <string name="screenshot_saved">Screenshot saved to %s</string>
-    <string name="recording_started">Recording started</string>
-    <string name="recording_stopped">Recording saved to %s</string>
-    <string name="error_screenshot_failed">Failed to save screenshot: %s</string>
-    <string name="error_recording_failed">Failed to start recording: %s</string>
-    <string name="error_no_stream">No active stream. Please launch stream first.</string>
-    <string name="error_storage_permission">Storage permission required to save files</string>
 
     <!-- Error Messages -->
     <string name="error_scan_first">Please scan network first to detect IP address</string>
-    <string name="error_tethering_enable_failed">Failed to enable tethering. Please check system settings.</string>
-    <string name="error_tethering_disable_failed">Failed to disable tethering.</string>
-    <string name="error_tethering_manual_required">Tethering may require manual activation in system settings.</string>
     <string name="error_no_interface">No tethering interface found. Please enable tethering first.</string>
     <string name="error_no_subnet">Unable to determine network subnet.</string>
     <string name="error_tethering_check_settings">Check phone settings and ensure ethernet tethering is enabled.</string>
     <string name="error_no_devices">No devices found on network. Make sure camera is connected.</string>
     <string name="error_scan_exception">Scan failed: %s</string>
     <string name="error_no_target_ip">No target IP detected. Please scan network first.</string>
-    <string name="error_gps_service_failed">Failed to launch browser. Please try again.</string>
-
-    <!-- Success Messages -->
-    <string name="success_tethering_enabled">Tethering enabled successfully.</string>
-    <string name="success_tethering_disabled">Tethering disabled successfully.</string>
-    <string name="success_device_found">Found camera at %s</string>
-    <string name="success_gps_started">Browser launched to %s</string>
-    <string name="success_gps_stopped">Browser closed.</string>
-
-    <!-- Info Messages -->
-    <string name="info_scanning_progress">Scanning… (%1$d/%2$d)</string>
-    <string name="info_tethering_enabling">Enabling tethering…</string>
-    <string name="info_tethering_disabling">Disabling tethering…</string>
-
     <!-- Settings Drawer -->
     <string name="settings_title">Settings</string>
     <string name="about_tab_title">About</string>
@@ -111,20 +53,15 @@
     <string name="input_protocol_rtsp">RTSP</string>
     <string name="input_protocol_udp">Raw UDP</string>
     <string name="camera_rtsp_port_label">Port</string>
-    <string name="camera_rtsp_port_hint">554</string>
     <string name="camera_rtsp_path_label">Path</string>
     <string name="camera_rtsp_path_hint">/live</string>
     <string name="camera_username_label">Username</string>
     <string name="camera_password_label">Password</string>
-    <string name="camera_rtsp_path_common">Common: /live, /Streaming/Channels/101 (Hikvision), /cam/realmonitor?channel=1&amp;subtype=0 (Dahua), /h264Preview_01_main (Reolink)</string>
     <string name="camera_credentials_info">Most IP cameras require credentials to access RTSP streams. Leave blank if your camera allows anonymous access.</string>
     <string name="camera_input_udp_info">Camera pushes UDP video to this device on the configured port.</string>
 
-    <!-- UDP Stream Section (legacy label kept) -->
-    <string name="udp_stream_section_title">UDP Fallback</string>
+    <!-- Stream Port -->
     <string name="stream_port_label">UDP Stream Port</string>
-    <string name="stream_port_default">8600</string>
-    <string name="udp_stream_info_text">Configure the port to receive UDP video stream from the camera.</string>
 
     <!-- RTSP Server Section -->
     <string name="rtsp_section_title">RTSP Server</string>
@@ -132,26 +69,13 @@
     <string name="rtsp_enable_description">Share stream via token-protected RTSP</string>
     <string name="rtsp_port_label">RTSP Port</string>
     <string name="rtsp_port_hint">8554</string>
-    <string name="rtsp_info_text">When enabled, the video stream will be available via RTSP for other devices on the network.</string>
-
-    <!-- RTSP Auth Section -->
-    <string name="rtsp_auth_section_title">Stream Token</string>
-    <string name="rtsp_token_label">Current:</string>
     <string name="rtsp_regenerate_token">Regenerate Token</string>
     <string name="rtsp_token_regenerated">New token generated. Update your clients with the new URL.</string>
-    <string name="rtsp_auth_info_text">The token is included in the RTSP URL for security. Only clients with the exact URL can connect. Regenerate to invalidate old URLs.</string>
-
     <!-- RTSP Status -->
-    <string name="rtsp_button">RTSP</string>
-    <string name="rtsp_stop_button">Stop Server</string>
-    <string name="rtsp_started">RTSP server started on port %d</string>
-    <string name="rtsp_stopped">RTSP server stopped</string>
     <string name="rtsp_disabled">RTSP server is disabled in settings</string>
     <string name="rtsp_error">Failed to start RTSP server: %s</string>
     <string name="rtsp_url_label">RTSP URL:</string>
     <string name="rtsp_url_copied">RTSP URL copied to clipboard</string>
-    <string name="rtsp_live">LIVE</string>
-    <string name="rtsp_credentials_required">Token will be auto-generated</string>
     <string name="rtsp_connect_first">Connect to camera first</string>
     <string name="rtsp_not_streaming">Not streaming</string>
 
@@ -160,8 +84,6 @@
     <string name="rtsp_server_description">Share video stream via token-protected RTSP</string>
     <string name="launch_rtsp">START\nSERVER</string>
     <string name="stop_rtsp">STOP\nSERVER</string>
-    <string name="rtsp_status_idle">Not streaming</string>
-    <string name="rtsp_status_streaming">Streaming live</string>
     <string name="rtsp_url_not_available">Enable in settings</string>
     <string name="rtsp_credentials_label">Token:</string>
     <string name="rtsp_auth_configured">Active</string>
@@ -176,11 +98,9 @@
     <string name="rtsp_notification_channel_name">RTSP Server</string>
     <string name="rtsp_notification_channel_description">Shows when RTSP server is running</string>
     <string name="rtsp_notification_title">RTSP Server Active</string>
-    <string name="rtsp_notification_text">Streaming on port %d</string>
     <string name="rtsp_notification_stop">Stop</string>
 
     <!-- About Section -->
-    <string name="about_section_title">About</string>
     <string name="about_app_version">Version %s</string>
     <string name="about_license_title">License</string>
     <string name="about_license_type">AGPL License</string>

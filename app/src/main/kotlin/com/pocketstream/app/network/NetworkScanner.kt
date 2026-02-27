@@ -104,49 +104,4 @@ class NetworkScanner {
         }
     }
 
-    /**
-     * Performs a quick scan to find the first active IP in the subnet.
-     * Useful for faster discovery when you just need to find any device.
-     * @param subnet The subnet to scan (e.g., "192.168.42")
-     * @param startIp Starting IP in range (default 1)
-     * @param endIp Ending IP in range (default 254)
-     * @return First active IP found, or null if none found
-     */
-    suspend fun findFirstActiveIp(
-        subnet: String,
-        startIp: Int = 1,
-        endIp: Int = 254
-    ): String? = withContext(Dispatchers.IO) {
-        Log.d(TAG, "Quick scan: Finding first active IP on subnet $subnet")
-
-        // Common Raspberry Pi IP addresses to check first
-        val commonIps = listOf(
-            "$subnet.1",    // Gateway
-            "$subnet.129",  // Common USB tethering client IP
-            "$subnet.10",
-            "$subnet.100",
-            "$subnet.2"
-        )
-
-        // Check common IPs first
-        for (ip in commonIps) {
-            val octet = ip.substringAfterLast(".").toIntOrNull() ?: continue
-            if (octet in startIp..endIp && isHostReachable(ip)) {
-                Log.d(TAG, "Found active IP (common): $ip")
-                return@withContext ip
-            }
-        }
-
-        // If not found in common IPs, scan the entire range
-        for (lastOctet in startIp..endIp) {
-            val ipAddress = "$subnet.$lastOctet"
-            if (isHostReachable(ipAddress)) {
-                Log.d(TAG, "Found active IP (full scan): $ipAddress")
-                return@withContext ipAddress
-            }
-        }
-
-        Log.d(TAG, "No active IP found on subnet $subnet")
-        null
-    }
 }

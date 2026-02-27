@@ -16,7 +16,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
+
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -503,28 +503,6 @@ class MainActivity : AppCompatActivity() {
                 binding.launchStreamButton.isEnabled = false
             }
         }
-    }
-
-    /**
-     * Copies the full stream URL (IP:port) to clipboard.
-     */
-    private fun copyStreamUrlToClipboard() {
-        val streamPort = preferencesManager.getStreamPort()
-        val url = if (phoneIpAddress != null) {
-            "$phoneIpAddress:$streamPort"
-        } else {
-            getString(R.string.stream_ip_not_detected)
-        }
-
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("Stream URL", url)
-        clipboard.setPrimaryClip(clip)
-
-        Toast.makeText(
-            this,
-            "Copied: $url",
-            Toast.LENGTH_SHORT
-        ).show()
     }
 
     // ========== RTSP Server Section ==========
@@ -1042,9 +1020,6 @@ class MainActivity : AppCompatActivity() {
             |License: Apache 2.0
             |
             |Kotlin Coroutines
-            |License: Apache 2.0
-            |
-            |OkHttp
             |License: Apache 2.0
             |
             |Full license details available at:

@@ -58,7 +58,6 @@ class FullscreenVideoActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityFullscreenVideoBinding
-    private lateinit var preferencesManager: PreferencesManager
     private var libVLC: LibVLC? = null
     private var mediaPlayer: MediaPlayer? = null
     private var streamUrl: String? = null
@@ -88,9 +87,6 @@ class FullscreenVideoActivity : AppCompatActivity() {
 
         binding = ActivityFullscreenVideoBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Initialize preferences manager
-        preferencesManager = PreferencesManager(this)
 
         // Get stream URL from intent
         streamUrl = intent.getStringExtra(MainActivity.EXTRA_STREAM_URL)

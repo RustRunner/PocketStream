@@ -84,21 +84,6 @@ class PreferencesManager(context: Context) {
         sharedPreferences.edit().putInt(KEY_STREAM_PORT, port).apply()
     }
 
-    /**
-     * Resets the stream port to default value.
-     */
-    fun resetStreamPort() {
-        saveStreamPort(DEFAULT_STREAM_PORT)
-    }
-
-    /**
-     * Clears all preferences.
-     */
-    fun clearAll() {
-        sharedPreferences.edit().clear().apply()
-        securePreferences.edit().clear().apply()
-    }
-
     // ========== Camera Input Protocol ==========
 
     fun getInputProtocol(): InputProtocol {
@@ -254,15 +239,4 @@ class PreferencesManager(context: Context) {
         return bytes.joinToString("") { "%02x".format(it) }
     }
 
-    /**
-     * Resets all RTSP server settings to defaults.
-     * Note: Token is preserved to avoid breaking existing client configurations.
-     * Use regenerateRtspToken() to explicitly change the token.
-     */
-    fun resetRtspSettings() {
-        sharedPreferences.edit()
-            .putBoolean(KEY_RTSP_ENABLED, false)
-            .putInt(KEY_RTSP_PORT, DEFAULT_RTSP_PORT)
-            .apply()
-    }
 }
